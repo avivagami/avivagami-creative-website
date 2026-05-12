@@ -1,0 +1,74 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: images/projects
+public_folder: /images/projects
+
+collections:
+  - name: content
+    label: Content
+    files:
+
+      - name: projects
+        label: Projects
+        file: content/projects.json
+        format: json
+        fields:
+          - name: items
+            label: Projects
+            label_singular: Project
+            widget: list
+            summary: "{{fields.title}} — {{fields.client}}"
+            fields:
+              - { name: title,  label: Title,       widget: string }
+              - { name: client, label: Client,       widget: string }
+              - { name: year,   label: Year,         widget: string, default: "'26" }
+              - { name: kind,   label: Type,         widget: string, hint: "e.g. creative direction · script · stage" }
+              - { name: role,   label: Role,         widget: string }
+              - { name: team,   label: Team size,    widget: string }
+              - name: span
+                label: Grid width
+                widget: select
+                options:
+                  - { label: "Full width",    value: w12 }
+                  - { label: "Wide (8 col)",  value: w8  }
+                  - { label: "Wide (7 col)",  value: w7  }
+                  - { label: "Half (6 col)",  value: w6  }
+                  - { label: "Narrow (5 col)",value: w5  }
+                  - { label: "Narrow (4 col)",value: w4  }
+                default: w6
+              - { name: desc,  label: Description, widget: text }
+              - name: tags
+                label: Tags
+                widget: list
+                allow_add: true
+              - name: image
+                label: Cover image
+                widget: image
+                required: false
+                hint: "Upload a photo. If left empty a graphic placeholder is shown."
+
+      - name: about
+        label: About
+        file: content/about.json
+        format: json
+        fields:
+          - { name: portrait,      label: Portrait photo,   widget: image }
+          - { name: lede,          label: Headline,         widget: string }
+          - { name: bio1,          label: "Bio — paragraph 1", widget: text }
+          - { name: bio2,          label: "Bio — paragraph 2", widget: text }
+          - { name: bio3,          label: "Bio — paragraph 3", widget: text }
+          - { name: bio4,          label: "Bio — paragraph 4", widget: text }
+          - { name: availability,  label: Availability,     widget: string }
+
+      - name: settings
+        label: Site Settings
+        file: content/settings.json
+        format: json
+        fields:
+          - { name: email,         label: Email,            widget: string }
+          - { name: phone_display, label: Phone (display),  widget: string }
+          - { name: linkedin,      label: LinkedIn URL,     widget: string }
+          - { name: vimeo,         label: Vimeo URL,        widget: string }
+          - { name: instagram,     label: Instagram URL,    widget: string }
