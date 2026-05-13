@@ -53,6 +53,8 @@ collections:
         label: About
         file: content/about.json
         format: json
+        media_folder: "/images/about"
+        public_folder: "/images/about"
         fields:
           - { name: portrait,      label: Portrait photo,   widget: image }
           - { name: lede,          label: Headline,         widget: string }
