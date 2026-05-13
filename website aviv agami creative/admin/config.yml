@@ -56,10 +56,10 @@ collections:
         fields:
           - { name: portrait,      label: Portrait photo,   widget: image }
           - { name: lede,          label: Headline,         widget: string }
-          - { name: bio1,          label: "Bio - paragraph 1", widget: text }
-          - { name: bio2,          label: "Bio - paragraph 2", widget: text }
-          - { name: bio3,          label: "Bio - paragraph 3", widget: text }
-          - { name: bio4,          label: "Bio - paragraph 4", widget: text }
+          - { name: bio1,          label: "Bio — paragraph 1", widget: text }
+          - { name: bio2,          label: "Bio — paragraph 2", widget: text }
+          - { name: bio3,          label: "Bio — paragraph 3", widget: text }
+          - { name: bio4,          label: "Bio — paragraph 4", widget: text }
           - { name: availability,  label: Availability,     widget: string }
 
       - name: settings
