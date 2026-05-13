@@ -2,7 +2,7 @@ backend:
   name: git-gateway
   branch: main
 
-media_folder: images/projects
+media_folder: "website aviv agami creative/images/projects"
 public_folder: /images/projects
 
 collections:
@@ -12,7 +12,7 @@ collections:
 
       - name: projects
         label: Projects
-        file: content/projects.json
+        file: "website aviv agami creative/content/projects.json"
         format: json
         fields:
           - name: items
@@ -51,22 +51,20 @@ collections:
 
       - name: about
         label: About
-        file: content/about.json
+        file: "website aviv agami creative/content/about.json"
         format: json
-        media_folder: "/images/about"
-        public_folder: "/images/about"
         fields:
           - { name: portrait,      label: Portrait photo,   widget: image }
           - { name: lede,          label: Headline,         widget: string }
-          - { name: bio1,          label: "Bio — paragraph 1", widget: text }
-          - { name: bio2,          label: "Bio — paragraph 2", widget: text }
-          - { name: bio3,          label: "Bio — paragraph 3", widget: text }
-          - { name: bio4,          label: "Bio — paragraph 4", widget: text }
+          - { name: bio1,          label: "Bio - paragraph 1", widget: text }
+          - { name: bio2,          label: "Bio - paragraph 2", widget: text }
+          - { name: bio3,          label: "Bio - paragraph 3", widget: text }
+          - { name: bio4,          label: "Bio - paragraph 4", widget: text }
           - { name: availability,  label: Availability,     widget: string }
 
       - name: settings
         label: Site Settings
-        file: content/settings.json
+        file: "website aviv agami creative/content/settings.json"
         format: json
         fields:
           - { name: email,         label: Email,            widget: string }
