@@ -249,39 +249,18 @@ function Marquee({ projects, variant }) {
   );
 }
 
-function ProjectImageGrid({ p, idx }) {
-  const cells = [0, 1, 2, 3, 4, 5];
-  const hasGallery = p.gallery && p.gallery.length > 0;
-  return (
-    <div className="aa-pc__grid">
-      {[0, 1].map((row) => (
-        <div key={row} className="aa-pc__grid-row">
-          {[0, 1, 2].map((col) => {
-            const cellIdx = row * 3 + col;
-            const art = ART_CYCLE[(idx + cellIdx) % ART_CYCLE.length];
-            const imgUrl = hasGallery ? p.gallery[cellIdx % p.gallery.length] : null;
-            return (
-              <div key={col} className="aa-pc__grid-cell">
-                <div
-                  className={`aa-pc__art ${imgUrl ? 'aa-pc__art--photo' : `aa-pc__art--${art}`}`}
-                  style={imgUrl ? { backgroundImage: `url(${imgUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
-                />
-              </div>
-            );
-          })}
-        </div>
-      ))}
-    </div>
-  );
-}
-
 function ProjectCard({ p, idx, onOpen }) {
   const art = p.art || ART_CYCLE[idx % ART_CYCLE.length];
   const hasImage = p.image && p.image.length > 0;
   return (
     <a href="#" className={`aa-pc aa-pc--${p.span || 'w6'} aa-reveal`} onClick={(e) => { e.preventDefault(); onOpen(p); }}>
       <div className="aa-pc__frame">
-        <ProjectImageGrid p={p} idx={idx} />
+        <div
+          className={`aa-pc__art ${hasImage ? 'aa-pc__art--photo' : `aa-pc__art--${art}`}`}
+          style={hasImage ? { backgroundImage: `url(${p.image})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
+        >
+          {!hasImage && p.big && <span className="aa-pc__numeral">{p.big}</span>}
+        </div>
         {(p.kind && (p.kind.includes('film') || p.kind.includes('motion') || p.kind.includes('visuals'))) && (
           <span className={`aa-pc__playicon ${art === 'b' || art === 'd' ? 'aa-pc__corner--inv' : ''}`}
             style={{ color: (art === 'b' || art === 'd') ? 'rgba(236,238,234,.85)' : undefined }}>
@@ -373,23 +352,8 @@ function ContactSection({ settings }) {
   const [form, setForm] = React.useState({ name: '', email: '', company: '', type: '', message: '' });
   const [focus, setFocus] = React.useState('');
   const [sent, setSent] = React.useState(false);
-  const [submitting, setSubmitting] = React.useState(false);
-  const [submitError, setSubmitError] = React.useState(false);
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
   const fld = (k) => focus === k ? 'aa-field aa-field--focus' : 'aa-field';
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setSubmitting(true);
-    setSubmitError(false);
-    fetch('/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ 'form-name': 'contact', ...form }).toString(),
-    })
-      .then(() => { setSent(true); setSubmitting(false); })
-      .catch(() => { setSubmitError(true); setSubmitting(false); });
-  };
 
   return (
     <div className="aa-contact-wrap" id="contact">
@@ -429,25 +393,24 @@ function ContactSection({ settings }) {
             </button>
           </div>
         ) : (
-          <form className="aa-contact__form" name="contact" method="POST" data-netlify="true" onSubmit={handleSubmit}>
-            <input type="hidden" name="form-name" value="contact" />
+          <form className="aa-contact__form" onSubmit={(e) => { e.preventDefault(); setSent(true); }}>
             <div className="aa-field__row">
               <label className={fld('name')}>
                 <span>01 · Name</span>
-                <input name="name" required value={form.name} onChange={set('name')} onFocus={() => setFocus('name')} onBlur={() => setFocus('')} placeholder="Your name" />
+                <input required value={form.name} onChange={set('name')} onFocus={() => setFocus('name')} onBlur={() => setFocus('')} placeholder="Your name" />
               </label>
               <label className={fld('email')}>
                 <span>02 · Email</span>
-                <input name="email" type="email" required value={form.email} onChange={set('email')} onFocus={() => setFocus('email')} onBlur={() => setFocus('')} placeholder="you@where.com" />
+                <input type="email" required value={form.email} onChange={set('email')} onFocus={() => setFocus('email')} onBlur={() => setFocus('')} placeholder="you@where.com" />
               </label>
             </div>
             <label className={fld('company')}>
               <span>03 · Company / studio</span>
-              <input name="company" value={form.company} onChange={set('company')} onFocus={() => setFocus('company')} onBlur={() => setFocus('')} placeholder="Optional" />
+              <input value={form.company} onChange={set('company')} onFocus={() => setFocus('company')} onBlur={() => setFocus('')} placeholder="Optional" />
             </label>
             <label className={fld('type')}>
               <span>04 · Project type</span>
-              <select name="type" required value={form.type} onChange={set('type')} onFocus={() => setFocus('type')} onBlur={() => setFocus('')}>
+              <select required value={form.type} onChange={set('type')} onFocus={() => setFocus('type')} onBlur={() => setFocus('')}>
                 <option value="">Select one</option>
                 <option>Campaign film</option>
                 <option>Live event direction</option>
@@ -459,15 +422,10 @@ function ContactSection({ settings }) {
             </label>
             <label className={fld('message')}>
               <span>05 · Message</span>
-              <textarea name="message" rows="4" required value={form.message} onChange={set('message')} onFocus={() => setFocus('message')} onBlur={() => setFocus('')} placeholder="One sentence on what you want remembered." />
+              <textarea rows="4" required value={form.message} onChange={set('message')} onFocus={() => setFocus('message')} onBlur={() => setFocus('')} placeholder="One sentence on what you want remembered." />
             </label>
-            {submitError && (
-              <p style={{fontFamily:'var(--font-mono)', fontSize:12, color:'var(--aa-signal)', margin:0}}>
-                Something went wrong. Try emailing directly at <a href={`mailto:${s.email}`} style={{color:'inherit'}}>{s.email}</a>.
-              </p>
-            )}
-            <button type="submit" className="aa-btn aa-btn--inv" disabled={submitting}>
-              {submitting ? 'Sending…' : <React.Fragment>Send brief <span className="arrow">→</span></React.Fragment>}
+            <button type="submit" className="aa-btn aa-btn--inv">
+              Send brief <span className="arrow">→</span>
             </button>
           </form>
         )}

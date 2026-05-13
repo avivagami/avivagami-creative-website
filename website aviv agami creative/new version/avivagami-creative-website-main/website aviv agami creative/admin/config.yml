@@ -2,7 +2,7 @@ backend:
   name: git-gateway
   branch: main
 
-media_folder: "website aviv agami creative/images/projects"
+media_folder: images/projects
 public_folder: /images/projects
 
 collections:
@@ -12,7 +12,7 @@ collections:
 
       - name: projects
         label: Projects
-        file: "website aviv agami creative/content/projects.json"
+        file: content/projects.json
         format: json
         fields:
           - name: items
@@ -47,23 +47,14 @@ collections:
                 label: Cover image
                 widget: image
                 required: false
-                hint: "Upload a photo. If left empty the grid uses graphic placeholders."
-              - name: gallery
-                label: Gallery images (grid of 6)
-                widget: list
-                allow_add: true
-                max: 6
-                label_singular: Image
-                hint: "Add up to 6 images — they fill the hover-expand grid on the project card. Leave empty to use graphic placeholders."
-                field:
-                  name: image
-                  label: Image
-                  widget: image
+                hint: "Upload a photo. If left empty a graphic placeholder is shown."
 
       - name: about
         label: About
-        file: "website aviv agami creative/content/about.json"
+        file: content/about.json
         format: json
+        media_folder: "/images/about"
+        public_folder: "/images/about"
         fields:
           - { name: portrait,      label: Portrait photo,   widget: image }
           - { name: lede,          label: Headline,         widget: string }
@@ -75,7 +66,7 @@ collections:
 
       - name: settings
         label: Site Settings
-        file: "website aviv agami creative/content/settings.json"
+        file: content/settings.json
         format: json
         fields:
           - { name: email,         label: Email,            widget: string }

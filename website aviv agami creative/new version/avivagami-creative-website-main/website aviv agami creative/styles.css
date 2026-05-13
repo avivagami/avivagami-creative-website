@@ -217,7 +217,7 @@ body[data-theme="dark"] .aa-logo:not(.aa-logo--inverse) .aa-logo__creative { col
 .aa-pc__frame { position: relative; overflow: hidden; background: var(--bg-2); border: 1px solid var(--border-soft); transition: border-color .2s var(--ease-out); }
 .aa-pc:hover .aa-pc__frame { border-color: var(--fg-1); }
 
-.aa-pc:hover .aa-pc__frame > .aa-pc__art { transform: scale(1.03); }
+.aa-pc:hover .aa-pc__art { transform: scale(1.03); }
 .aa-pc:hover .aa-pc__title { color: var(--accent); }
 
 .aa-pc__art { position: absolute; inset: 0; transition: transform .8s var(--ease-out); display: flex; align-items: center; justify-content: center; overflow: hidden; }
@@ -250,36 +250,6 @@ body[data-theme="dark"] .aa-logo:not(.aa-logo--inverse) .aa-logo__creative { col
 .aa-pc__title { font-family: var(--font-sans); font-weight: 500; font-size: 22px; letter-spacing: -0.015em; line-height: 1.2; transition: color .12s var(--ease-out); }
 .aa-pc__kind { font-family: var(--font-script); font-weight: 600; font-size: 18px; color: var(--accent); line-height: 1; }
 .aa-pc__client { font-family: var(--font-mono); font-size: 11px; color: var(--fg-3); letter-spacing: .04em; }
-
-/* ===== Project image grid ===== */
-.aa-pc__grid {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  background: var(--bg-1);
-}
-.aa-pc__grid-row {
-  display: flex;
-  flex: 1 1 0;
-  gap: 2px;
-  min-height: 0;
-}
-.aa-pc__grid-cell {
-  flex: 1 1 0;
-  position: relative;
-  overflow: hidden;
-  min-width: 0;
-  transition: flex .45s cubic-bezier(.4, 0, .2, 1);
-}
-.aa-pc__grid-cell:hover { flex: 2 1 0; }
-.aa-pc__grid-cell .aa-pc__art {
-  position: absolute;
-  inset: 0;
-  transition: transform .45s cubic-bezier(.4, 0, .2, 1);
-}
-.aa-pc__grid-cell:hover .aa-pc__art { transform: scale(1.08); }
 
 /* span variants — editorial rhythm */
 .aa-pc--w12 { grid-column: span 12; }

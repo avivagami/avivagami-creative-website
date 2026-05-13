@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd \"C:\\\\Users\\\\aviva\\\\Downloads\" && ls \"website AA creative-handoff.zip\")",
+      "PowerShell(New-Item -ItemType Directory -Path \"C:\\\\Users\\\\aviva\\\\website aviv agami creative\\\\admin\" -Force)",
+      "PowerShell(New-Item -ItemType Directory -Path \"C:\\\\Users\\\\aviva\\\\website aviv agami creative\\\\content\" -Force)",
+      "PowerShell(New-Item -ItemType Directory -Path \"C:\\\\Users\\\\aviva\\\\website aviv agami creative\\\\images\\\\projects\" -Force)",
+      "mcp__Claude_in_Chrome__browser_batch",
+      "mcp__Claude_in_Chrome__computer",
+      "mcp__Claude_in_Chrome__javascript_tool",
+      "mcp__Claude_in_Chrome__navigate"
+    ]
+  }
+}

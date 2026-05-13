@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 260" width="600" height="260">
+  <defs>
+    
+  </defs>
+  <rect width="600" height="260" fill="#ECEEEA"></rect>
+  <text x="300" y="150" text-anchor="middle" font-family="&#39;Inter Tight&#39;, sans-serif" font-weight="600" font-size="160" letter-spacing="-10" fill="#0A0A0A">AA</text>
+  <text x="300" y="225" text-anchor="middle" font-family="&#39;Caveat&#39;, cursive" font-weight="600" font-size="78" fill="#E63946" transform="rotate(-5 300 215)">creative</text>
+</svg>
