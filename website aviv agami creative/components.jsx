@@ -352,8 +352,23 @@ function ContactSection({ settings }) {
   const [form, setForm] = React.useState({ name: '', email: '', company: '', type: '', message: '' });
   const [focus, setFocus] = React.useState('');
   const [sent, setSent] = React.useState(false);
+  const [submitting, setSubmitting] = React.useState(false);
+  const [submitError, setSubmitError] = React.useState(false);
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
   const fld = (k) => focus === k ? 'aa-field aa-field--focus' : 'aa-field';
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setSubmitError(false);
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ 'form-name': 'contact', ...form }).toString(),
+    })
+      .then(() => { setSent(true); setSubmitting(false); })
+      .catch(() => { setSubmitError(true); setSubmitting(false); });
+  };
 
   return (
     <div className="aa-contact-wrap" id="contact">
@@ -393,24 +408,25 @@ function ContactSection({ settings }) {
             </button>
           </div>
         ) : (
-          <form className="aa-contact__form" onSubmit={(e) => { e.preventDefault(); setSent(true); }}>
+          <form className="aa-contact__form" name="contact" method="POST" data-netlify="true" onSubmit={handleSubmit}>
+            <input type="hidden" name="form-name" value="contact" />
             <div className="aa-field__row">
               <label className={fld('name')}>
                 <span>01 · Name</span>
-                <input required value={form.name} onChange={set('name')} onFocus={() => setFocus('name')} onBlur={() => setFocus('')} placeholder="Your name" />
+                <input name="name" required value={form.name} onChange={set('name')} onFocus={() => setFocus('name')} onBlur={() => setFocus('')} placeholder="Your name" />
               </label>
               <label className={fld('email')}>
                 <span>02 · Email</span>
-                <input type="email" required value={form.email} onChange={set('email')} onFocus={() => setFocus('email')} onBlur={() => setFocus('')} placeholder="you@where.com" />
+                <input name="email" type="email" required value={form.email} onChange={set('email')} onFocus={() => setFocus('email')} onBlur={() => setFocus('')} placeholder="you@where.com" />
               </label>
             </div>
             <label className={fld('company')}>
               <span>03 · Company / studio</span>
-              <input value={form.company} onChange={set('company')} onFocus={() => setFocus('company')} onBlur={() => setFocus('')} placeholder="Optional" />
+              <input name="company" value={form.company} onChange={set('company')} onFocus={() => setFocus('company')} onBlur={() => setFocus('')} placeholder="Optional" />
             </label>
             <label className={fld('type')}>
               <span>04 · Project type</span>
-              <select required value={form.type} onChange={set('type')} onFocus={() => setFocus('type')} onBlur={() => setFocus('')}>
+              <select name="type" required value={form.type} onChange={set('type')} onFocus={() => setFocus('type')} onBlur={() => setFocus('')}>
                 <option value="">Select one</option>
                 <option>Campaign film</option>
                 <option>Live event direction</option>
@@ -422,10 +438,15 @@ function ContactSection({ settings }) {
             </label>
             <label className={fld('message')}>
               <span>05 · Message</span>
-              <textarea rows="4" required value={form.message} onChange={set('message')} onFocus={() => setFocus('message')} onBlur={() => setFocus('')} placeholder="One sentence on what you want remembered." />
+              <textarea name="message" rows="4" required value={form.message} onChange={set('message')} onFocus={() => setFocus('message')} onBlur={() => setFocus('')} placeholder="One sentence on what you want remembered." />
             </label>
-            <button type="submit" className="aa-btn aa-btn--inv">
-              Send brief <span className="arrow">→</span>
+            {submitError && (
+              <p style={{fontFamily:'var(--font-mono)', fontSize:12, color:'var(--aa-signal)', margin:0}}>
+                Something went wrong. Try emailing directly at <a href={`mailto:${s.email}`} style={{color:'inherit'}}>{s.email}</a>.
+              </p>
+            )}
+            <button type="submit" className="aa-btn aa-btn--inv" disabled={submitting}>
+              {submitting ? 'Sending…' : <React.Fragment>Send brief <span className="arrow">→</span></React.Fragment>}
             </button>
           </form>
         )}
