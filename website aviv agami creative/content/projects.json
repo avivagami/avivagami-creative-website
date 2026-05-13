@@ -1,124 +1,165 @@
 {
   "items": [
     {
-      "title": "Architecture of Attention",
+      "span": "w12",
       "client": "Tier-one tech keynote",
-      "year": "'26",
+      "desc": "A two-hour keynote rebuilt from the script up. We treated each act as a film: cold open, escalation, payoff. Every transition earned its keep.",
       "kind": "creative direction · script · stage",
       "role": "Creative Director",
-      "team": "4 + collaborators",
-      "span": "w12",
-      "desc": "A two-hour keynote rebuilt from the script up. We treated each act as a film: cold open, escalation, payoff. Every transition earned its keep.",
-      "tags": ["Stage direction", "Concept development", "Art direction"],
-      "image": ""
+      "title": "Architecture of Attention",
+      "tags": [
+        "Stage direction",
+        "Concept development",
+        "Art direction"
+      ],
+      "image": "/images/projects/487303020_1210581271072376_5332909265051358405_n.jpg",
+      "year": "'26",
+      "team": "4 + collaborators"
     },
     {
-      "title": "Signal in the noise",
+      "span": "w6",
       "client": "Cultural festival, three nights",
-      "year": "'26",
+      "desc": "A festival identity built around one idea: every performance, one signal. We directed the live show, the visuals, and the morning-after recap film.",
       "kind": "concept · campaign · live direction",
       "role": "Creative Director",
-      "team": "6 + collaborators",
-      "span": "w6",
-      "desc": "A festival identity built around one idea: every performance, one signal. We directed the live show, the visuals, and the morning-after recap film.",
-      "tags": ["Concept development", "Art direction", "Video direction", "Content creation"],
-      "image": ""
+      "title": "Signal in the noise",
+      "tags": [
+        "Concept development",
+        "Art direction",
+        "Video direction",
+        "Content creation"
+      ],
+      "image": "",
+      "year": "'26",
+      "team": "6 + collaborators"
     },
     {
-      "title": "A film for an opening",
+      "span": "w6",
       "client": "Boutique hotel launch",
-      "year": "'25",
+      "desc": "A campaign film built in nine shots. No voiceover. No music sting at the end. Just a room, a window, and a guest.",
       "kind": "campaign film · 90s",
       "role": "Director · Concept",
-      "team": "3 + collaborators",
-      "span": "w6",
-      "desc": "A campaign film built in nine shots. No voiceover. No music sting at the end. Just a room, a window, and a guest.",
-      "tags": ["Video direction", "Concept development", "Art direction"],
-      "image": ""
+      "title": "A film for an opening",
+      "tags": [
+        "Video direction",
+        "Concept development",
+        "Art direction"
+      ],
+      "image": "",
+      "year": "'25",
+      "team": "3 + collaborators"
     },
     {
-      "title": "Generative pipeline, in production",
+      "span": "w4",
       "client": "In-house R&D",
-      "year": "'25",
+      "desc": "A production pipeline mixing generative imagery with directed photography. Built so the human stays in the room.",
       "kind": "creative strategy · tooling",
       "role": "Creative Director",
-      "team": "2 + collaborators",
-      "span": "w4",
-      "desc": "A production pipeline mixing generative imagery with directed photography. Built so the human stays in the room.",
-      "tags": ["AI video production", "Concept development", "Content creation"],
-      "image": ""
+      "title": "Generative pipeline, in production",
+      "tags": [
+        "AI video production",
+        "Concept development",
+        "Content creation"
+      ],
+      "image": "",
+      "year": "'25",
+      "team": "2 + collaborators"
     },
     {
-      "title": "Concert visuals, residency",
+      "span": "w8",
       "client": "Eight-night residency",
-      "year": "'25",
+      "desc": "Eight nights, one visual language, no two shows the same. The visuals listened to the room.",
       "kind": "live visuals · motion",
       "role": "Director · Live ops",
-      "team": "4 + collaborators",
-      "span": "w8",
-      "desc": "Eight nights, one visual language, no two shows the same. The visuals listened to the room.",
-      "tags": ["Stage direction", "Art direction", "Content creation", "Video direction"],
-      "image": ""
+      "title": "Concert visuals, residency",
+      "tags": [
+        "Stage direction",
+        "Art direction",
+        "Content creation",
+        "Video direction"
+      ],
+      "image": "",
+      "year": "'25",
+      "team": "4 + collaborators"
     },
     {
-      "title": "Brand activation, museum night",
+      "span": "w6",
       "client": "Heritage institution",
-      "year": "'25",
+      "desc": "A late-night activation that turned the permanent collection into a stage. Press loved it. So did the security guards.",
       "kind": "concept · campaign film",
       "role": "Creative Director",
-      "team": "5 + collaborators",
-      "span": "w6",
-      "desc": "A late-night activation that turned the permanent collection into a stage. Press loved it. So did the security guards.",
-      "tags": ["Concept development", "Video direction", "Art direction"],
-      "image": ""
+      "title": "Brand activation, museum night",
+      "tags": [
+        "Concept development",
+        "Video direction",
+        "Art direction"
+      ],
+      "image": "",
+      "year": "'25",
+      "team": "5 + collaborators"
     },
     {
-      "title": "Keynote, in three acts",
+      "span": "w6",
       "client": "Series-B launch",
-      "year": "'24",
+      "desc": "A founder who hated keynotes, asked to do one. We wrote the script first, then the deck, then the stage. He still hates them. This one worked.",
       "kind": "deck · script · stage",
       "role": "Creative Director",
-      "team": "3 + collaborators",
-      "span": "w6",
-      "desc": "A founder who hated keynotes, asked to do one. We wrote the script first, then the deck, then the stage. He still hates them. This one worked.",
-      "tags": ["Stage direction", "Concept development", "Art direction"],
-      "image": ""
+      "title": "Keynote, in three acts",
+      "tags": [
+        "Stage direction",
+        "Concept development",
+        "Art direction"
+      ],
+      "image": "",
+      "year": "'24",
+      "team": "3 + collaborators"
     },
     {
-      "title": "Festival recap, six minutes",
+      "span": "w5",
       "client": "Cultural festival",
-      "year": "'24",
+      "desc": "Edited from 60+ hours of footage. The cut you remember the next morning, not the one that won the algorithm.",
       "kind": "recap film · 6m",
       "role": "Director · Editor",
-      "team": "2 + collaborators",
-      "span": "w5",
-      "desc": "Edited from 60+ hours of footage. The cut you remember the next morning, not the one that won the algorithm.",
-      "tags": ["Video direction", "Content creation"],
-      "image": ""
+      "title": "Festival recap, six minutes",
+      "tags": [
+        "Video direction",
+        "Content creation"
+      ],
+      "image": "",
+      "year": "'24",
+      "team": "2 + collaborators"
     },
     {
-      "title": "Stage design, corporate launch",
+      "span": "w7",
       "client": "Fortune 500 product reveal",
-      "year": "'24",
+      "desc": "Hard problem: a product launch in a venue with no theatre rigging and a 90-minute load-in. The stage was the film.",
       "kind": "stage · scenography · film",
       "role": "Creative Director",
-      "team": "8 + collaborators",
-      "span": "w7",
-      "desc": "Hard problem: a product launch in a venue with no theatre rigging and a 90-minute load-in. The stage was the film.",
-      "tags": ["Stage direction", "Art direction", "Video direction", "Concept development"],
-      "image": ""
+      "title": "Stage design, corporate launch",
+      "tags": [
+        "Stage direction",
+        "Art direction",
+        "Video direction",
+        "Concept development"
+      ],
+      "image": "",
+      "year": "'24",
+      "team": "8 + collaborators"
     },
     {
-      "title": "Manifesto, one page",
+      "span": "w12",
       "client": "Independent founder",
-      "year": "'24",
+      "desc": "One page. 240 words. The founder reads it before every all-hands. That was the brief.",
       "kind": "copy · creative strategy",
       "role": "Strategy · Copy",
-      "team": "Solo + 1 collaborator",
-      "span": "w12",
-      "desc": "One page. 240 words. The founder reads it before every all-hands. That was the brief.",
-      "tags": ["Concept development", "Content creation"],
-      "image": ""
+      "title": "Manifesto, one page",
+      "tags": [
+        "Concept development",
+        "Content creation"
+      ],
+      "image": "",
+      "year": "'24",
+      "team": "Solo + 1 collaborator"
     }
   ]
 }
