@@ -102,8 +102,9 @@ const CAPS = [
   { num: '05', name: 'Copy & script',           yrs: '10 yrs', desc: 'Manifestos, scripts, taglines, deck copy. Sentences that survive the legal review.' },
 ];
 
-function Nav({ settings }) {
+function Nav({ settings, about }) {
   const s = settings || SETTINGS_DEFAULT;
+  const a = about || ABOUT_DEFAULT;
   const items = [
     { id: 'work', label: 'Work' },
     { id: 'about', label: 'About' },
@@ -142,7 +143,7 @@ function Nav({ settings }) {
       </nav>
       <div className="aa-nav__meta">
         <span className="aa-nav__pulse"></span>
-        {(ABOUT_DEFAULT).availability}
+        {a.availability}
       </div>
     </header>
   );
@@ -521,20 +522,25 @@ function Footer({ settings, projects }) {
 function ProjectLightbox({ p, onClose }) {
   const [slide, setSlide] = React.useState(0);
   React.useEffect(() => { setSlide(0); }, [p]);
+
+  const photoSlides = (p?.gallery && p.gallery.length > 0)
+    ? p.gallery
+    : (p?.image && p.image.length > 0 ? [p.image] : null);
+  const artSlides = p?.slides || [p?.art || 'a'];
+  const total = photoSlides ? photoSlides.length : artSlides.length;
+
   React.useEffect(() => {
     const onKey = (e) => {
       if (e.key === 'Escape') onClose();
       if (e.key === 'ArrowLeft') setSlide((s) => Math.max(0, s - 1));
-      if (e.key === 'ArrowRight') setSlide((s) => Math.min((p?.slides?.length || 1) - 1, s + 1));
+      if (e.key === 'ArrowRight') setSlide((s) => Math.min(total - 1, s + 1));
     };
     window.addEventListener('keydown', onKey);
     document.body.style.overflow = 'hidden';
     return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = ''; };
-  }, [onClose, p]);
+  }, [onClose, p, total]);
   if (!p) return null;
 
-  const slides = p.slides || [p.art || 'a'];
-  const total = slides.length;
   const prev = () => setSlide((s) => Math.max(0, s - 1));
   const next = () => setSlide((s) => Math.min(total - 1, s + 1));
 
@@ -544,22 +550,26 @@ function ProjectLightbox({ p, onClose }) {
       <div className="aa-lb__inner" onClick={(e) => e.stopPropagation()}>
         <div className="aa-lb__carousel">
           <div className="aa-lb__slides">
-            {p.image && p.image.length > 0 ? (
-              <div className="aa-lb__slide is-active">
-                <div className="aa-pc__art" style={{backgroundImage:`url(${p.image})`, backgroundSize:'cover', backgroundPosition:'center', position:'absolute', inset:0}} />
-              </div>
-            ) : slides.map((art, i) => (
-              <div key={i} className={`aa-lb__slide ${i === slide ? 'is-active' : ''}`} aria-hidden={i !== slide}>
-                <div className={`aa-pc__art aa-pc__art--${art}`} />
-              </div>
-            ))}
+            {photoSlides ? (
+              photoSlides.map((imgUrl, i) => (
+                <div key={i} className={`aa-lb__slide ${i === slide ? 'is-active' : ''}`} aria-hidden={i !== slide}>
+                  <div className="aa-pc__art" style={{backgroundImage:`url(${imgUrl})`, backgroundSize:'cover', backgroundPosition:'center', position:'absolute', inset:0}} />
+                </div>
+              ))
+            ) : (
+              artSlides.map((art, i) => (
+                <div key={i} className={`aa-lb__slide ${i === slide ? 'is-active' : ''}`} aria-hidden={i !== slide}>
+                  <div className={`aa-pc__art aa-pc__art--${art}`} />
+                </div>
+              ))
+            )}
           </div>
-          {!p.image && total > 1 && (
+          {total > 1 && (
             <React.Fragment>
               <button className="aa-lb__arrow aa-lb__arrow--prev" onClick={prev} disabled={slide === 0} aria-label="Previous">←</button>
               <button className="aa-lb__arrow aa-lb__arrow--next" onClick={next} disabled={slide === total - 1} aria-label="Next">→</button>
               <div className="aa-lb__dots">
-                {slides.map((_, i) => (
+                {Array.from({length: total}).map((_, i) => (
                   <button key={i} className={`aa-lb__dot ${i === slide ? 'is-active' : ''}`} onClick={() => setSlide(i)} aria-label={`Slide ${i + 1}`} />
                 ))}
               </div>
@@ -581,9 +591,16 @@ function ProjectLightbox({ p, onClose }) {
             <div><dt>Role</dt><dd>{p.role}</dd></div>
             <div><dt>Team</dt><dd>{p.team}</dd></div>
           </dl>
-          <a href="#contact" className="aa-btn aa-btn--inv" onClick={onClose} style={{background:'var(--fg-1)', color:'var(--bg-1)', borderColor:'var(--fg-1)'}}>
-            Discuss a similar brief <span className="arrow">→</span>
-          </a>
+          <div style={{display:'flex', gap:12, flexWrap:'wrap'}}>
+            {p.link && p.link.length > 0 && (
+              <a href={p.link} target="_blank" rel="noreferrer" className="aa-btn aa-btn--inv">
+                View project <span className="arrow">↗</span>
+              </a>
+            )}
+            <a href="#contact" className="aa-btn aa-btn--inv" onClick={onClose} style={{background:'var(--fg-1)', color:'var(--bg-1)', borderColor:'var(--fg-1)'}}>
+              Discuss a similar brief <span className="arrow">→</span>
+            </a>
+          </div>
         </div>
       </div>
     </div>

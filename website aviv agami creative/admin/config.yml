@@ -23,7 +23,16 @@ collections:
             fields:
               - { name: title,  label: Title,       widget: string }
               - { name: client, label: Client,       widget: string }
-              - { name: year,   label: Year,         widget: string, default: "'26" }
+              - name: year
+                label: Year
+                widget: select
+                options:
+                  - { label: "'26", value: "'26" }
+                  - { label: "'25", value: "'25" }
+                  - { label: "'24", value: "'24" }
+                  - { label: "'23", value: "'23" }
+                  - { label: "'22", value: "'22" }
+                default: "'26"
               - { name: kind,   label: Type,         widget: string, hint: "e.g. creative direction · script · stage" }
               - { name: role,   label: Role,         widget: string }
               - { name: team,   label: Team size,    widget: string }
@@ -43,22 +52,27 @@ collections:
                 label: Tags
                 widget: list
                 allow_add: true
+                hint: "Suggested: Stage direction · Art direction · Video direction · Concept development · Content creation · AI video production · Copy & strategy"
               - name: image
-                label: Cover image
+                label: Cover image (lightbox fallback)
                 widget: image
                 required: false
-                hint: "Upload a photo. If left empty the grid uses graphic placeholders."
+                hint: "Used in the lightbox only if no Gallery images are uploaded. Upload a single high-res photo here, or skip and use Gallery instead."
               - name: gallery
-                label: Gallery images (grid of 6)
+                label: Gallery images
                 widget: list
                 allow_add: true
-                max: 6
                 label_singular: Image
-                hint: "Add up to 6 images — they fill the hover-expand grid on the project card. Leave empty to use graphic placeholders."
+                hint: "Upload photos. They fill the hover grid on the project card AND appear as a carousel in the lightbox. This takes priority over the Cover image above."
                 field:
                   name: image
                   label: Image
                   widget: image
+              - name: link
+                label: Project link (optional)
+                widget: string
+                required: false
+                hint: "Vimeo, press article, or project website. Shown as 'View project ↗' in the expanded view."
 
       - name: about
         label: About
@@ -71,7 +85,10 @@ collections:
           - { name: bio2,          label: "Bio — paragraph 2", widget: text }
           - { name: bio3,          label: "Bio — paragraph 3", widget: text }
           - { name: bio4,          label: "Bio — paragraph 4", widget: text }
-          - { name: availability,  label: Availability,     widget: string }
+          - name: availability
+            label: Availability
+            widget: string
+            hint: "Shown in the nav bar and About section. e.g. Available · Spring '26"
 
       - name: settings
         label: Site Settings
@@ -79,7 +96,7 @@ collections:
         format: json
         fields:
           - { name: email,         label: Email,            widget: string }
-          - { name: phone_display, label: Phone (display),  widget: string }
+          - { name: phone_display, label: Phone (display),  widget: string, hint: "Shown as plain text in Contact. e.g. +972 · on request" }
           - { name: linkedin,      label: LinkedIn URL,     widget: string }
           - { name: vimeo,         label: Vimeo URL,        widget: string }
           - { name: instagram,     label: Instagram URL,    widget: string }
