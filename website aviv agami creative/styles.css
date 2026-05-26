@@ -440,7 +440,7 @@ body[data-theme="dark"] .aa-logo:not(.aa-logo--inverse) .aa-logo__creative { col
 
 /* Body */
 .aa-lb__body { padding: 56px; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; }
-.aa-lb__close { position: absolute; right: 32px; top: 32px; z-index: 100; background: var(--bg-1); color: var(--fg-1); border: 1px solid var(--fg-1); width: 44px; height: 44px; border-radius: 999px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: all .12s var(--ease-out); }
+.aa-lb__close { position: absolute; right: 52px; top: 52px; z-index: 100; background: var(--bg-1); color: var(--fg-1); border: 1px solid var(--fg-1); width: 44px; height: 44px; border-radius: 999px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: all .12s var(--ease-out); }
 .aa-lb__close:hover { background: var(--accent); color: var(--aa-paper); border-color: var(--accent); }
 .aa-lb__no { font-family: var(--font-mono); font-size: 11px; color: var(--fg-3); letter-spacing: .08em; text-transform: uppercase; }
 .aa-lb__title { font-family: var(--font-sans); font-weight: 500; font-size: clamp(28px, 3.5vw, 52px); letter-spacing: -0.025em; line-height: 1; margin: 0; }
