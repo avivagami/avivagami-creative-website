@@ -68,8 +68,13 @@ collections:
                   name: image
                   label: Image
                   widget: image
+              - name: youtube
+                label: YouTube video (optional)
+                widget: string
+                required: false
+                hint: "Paste a YouTube URL (youtube.com/watch?v=... or youtu.be/...). The video becomes the main view when a visitor opens the project. Gallery photos appear as thumbnails below it."
               - name: link
-                label: Project link (optional)
+                label: External link (optional)
                 widget: string
                 required: false
                 hint: "Vimeo, press article, or project website. Shown as 'View project ↗' in the expanded view."

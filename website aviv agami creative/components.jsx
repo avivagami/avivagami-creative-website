@@ -251,7 +251,6 @@ function Marquee({ projects, variant }) {
 }
 
 function ProjectImageGrid({ p, idx }) {
-  const cells = [0, 1, 2, 3, 4, 5];
   const hasGallery = p.gallery && p.gallery.length > 0;
   return (
     <div className="aa-pc__grid">
@@ -261,8 +260,9 @@ function ProjectImageGrid({ p, idx }) {
             const cellIdx = row * 3 + col;
             const art = ART_CYCLE[(idx + cellIdx) % ART_CYCLE.length];
             const imgUrl = hasGallery ? p.gallery[cellIdx % p.gallery.length] : null;
+            const isFeatured = row === 0 && col === 0 && hasGallery;
             return (
-              <div key={col} className="aa-pc__grid-cell">
+              <div key={col} className={`aa-pc__grid-cell${isFeatured ? ' aa-pc__grid-cell--featured' : ''}`}>
                 <div
                   className={`aa-pc__art ${imgUrl ? 'aa-pc__art--photo' : `aa-pc__art--${art}`}`}
                   style={imgUrl ? { backgroundImage: `url(${imgUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
@@ -519,10 +519,18 @@ function Footer({ settings, projects }) {
   );
 }
 
+function ytEmbedUrl(url) {
+  if (!url) return null;
+  const m = url.match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);
+  return m ? 'https://www.youtube.com/embed/' + m[1] + '?rel=0' : null;
+}
+
 function ProjectLightbox({ p, onClose }) {
   const [slide, setSlide] = React.useState(0);
-  React.useEffect(() => { setSlide(0); }, [p]);
+  const [mediaSlot, setMediaSlot] = React.useState('video');
+  React.useEffect(() => { setSlide(0); setMediaSlot('video'); }, [p]);
 
+  const embedUrl = p ? ytEmbedUrl(p.youtube) : null;
   const photoSlides = (p?.gallery && p.gallery.length > 0)
     ? p.gallery
     : (p?.image && p.image.length > 0 ? [p.image] : null);
@@ -530,78 +538,134 @@ function ProjectLightbox({ p, onClose }) {
   const total = photoSlides ? photoSlides.length : artSlides.length;
 
   React.useEffect(() => {
+    if (!p) return;
+    const ytSlots = embedUrl ? ['video', ...Array.from({length: photoSlides ? photoSlides.length : 0}, (_, i) => i)] : null;
     const onKey = (e) => {
-      if (e.key === 'Escape') onClose();
-      if (e.key === 'ArrowLeft') setSlide((s) => Math.max(0, s - 1));
-      if (e.key === 'ArrowRight') setSlide((s) => Math.min(total - 1, s + 1));
+      if (e.key === 'Escape') { onClose(); return; }
+      if (embedUrl && ytSlots) {
+        const curr = ytSlots.indexOf(mediaSlot);
+        if (e.key === 'ArrowLeft' && curr > 0) setMediaSlot(ytSlots[curr - 1]);
+        if (e.key === 'ArrowRight' && curr < ytSlots.length - 1) setMediaSlot(ytSlots[curr + 1]);
+      } else {
+        if (e.key === 'ArrowLeft') setSlide((s) => Math.max(0, s - 1));
+        if (e.key === 'ArrowRight') setSlide((s) => Math.min(total - 1, s + 1));
+      }
     };
     window.addEventListener('keydown', onKey);
     document.body.style.overflow = 'hidden';
     return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = ''; };
-  }, [onClose, p, total]);
+  }, [onClose, p, total, embedUrl, mediaSlot, photoSlides]);
   if (!p) return null;
 
   const prev = () => setSlide((s) => Math.max(0, s - 1));
   const next = () => setSlide((s) => Math.min(total - 1, s + 1));
 
+  const infoPanel = (
+    <div className="aa-lb__body">
+      <div className="aa-lb__no">{p.client} · {p.year}</div>
+      <h3 className="aa-lb__title">{p.title}</h3>
+      <div className="aa-lb__kind">{p.kind}</div>
+      {p.tags && p.tags.length > 0 && (
+        <div className="aa-lb__tags">
+          {p.tags.map((tag) => <span key={tag} className="aa-lb__tag">{tag}</span>)}
+        </div>
+      )}
+      <p className="aa-lb__desc">{p.desc}</p>
+      <dl className="aa-lb__meta">
+        <div><dt>Role</dt><dd>{p.role}</dd></div>
+        <div><dt>Team</dt><dd>{p.team}</dd></div>
+      </dl>
+      <div style={{display:'flex', gap:12, flexWrap:'wrap'}}>
+        {p.link && p.link.length > 0 && (
+          <a href={p.link} target="_blank" rel="noreferrer" className="aa-btn aa-btn--inv">
+            View project <span className="arrow">↗</span>
+          </a>
+        )}
+        <a href="#contact" className="aa-btn aa-btn--inv" onClick={onClose} style={{background:'var(--fg-1)', color:'var(--bg-1)', borderColor:'var(--fg-1)'}}>
+          Discuss a similar brief <span className="arrow">→</span>
+        </a>
+      </div>
+    </div>
+  );
+
   return (
     <div className="aa-lb" onClick={onClose}>
       <button className="aa-lb__close" onClick={onClose} aria-label="Close">×</button>
       <div className="aa-lb__inner" onClick={(e) => e.stopPropagation()}>
-        <div className="aa-lb__carousel">
-          <div className="aa-lb__slides">
-            {photoSlides ? (
-              photoSlides.map((imgUrl, i) => (
-                <div key={i} className={`aa-lb__slide ${i === slide ? 'is-active' : ''}`} aria-hidden={i !== slide}>
-                  <div className="aa-pc__art" style={{backgroundImage:`url(${imgUrl})`, backgroundSize:'cover', backgroundPosition:'center', position:'absolute', inset:0}} />
-                </div>
-              ))
-            ) : (
-              artSlides.map((art, i) => (
-                <div key={i} className={`aa-lb__slide ${i === slide ? 'is-active' : ''}`} aria-hidden={i !== slide}>
-                  <div className={`aa-pc__art aa-pc__art--${art}`} />
-                </div>
-              ))
-            )}
-          </div>
-          {total > 1 && (
-            <React.Fragment>
-              <button className="aa-lb__arrow aa-lb__arrow--prev" onClick={prev} disabled={slide === 0} aria-label="Previous">←</button>
-              <button className="aa-lb__arrow aa-lb__arrow--next" onClick={next} disabled={slide === total - 1} aria-label="Next">→</button>
-              <div className="aa-lb__dots">
-                {Array.from({length: total}).map((_, i) => (
-                  <button key={i} className={`aa-lb__dot ${i === slide ? 'is-active' : ''}`} onClick={() => setSlide(i)} aria-label={`Slide ${i + 1}`} />
+
+        {embedUrl ? (
+          /* ── YouTube mode: video hero + thumbnail strip ── */
+          <div className="aa-lb__carousel aa-lb__carousel--yt">
+            <div className="aa-lb__media-slot">
+              {mediaSlot === 'video' ? (
+                <iframe
+                  className="aa-lb__yt"
+                  src={embedUrl}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              ) : (
+                <div
+                  className="aa-pc__art"
+                  style={{backgroundImage:`url(${photoSlides[mediaSlot]})`, backgroundSize:'cover', backgroundPosition:'center', position:'absolute', inset:0}}
+                />
+              )}
+            </div>
+            {photoSlides && photoSlides.length > 0 && (
+              <div className="aa-lb__thumbs">
+                <button
+                  className={`aa-lb__thumb aa-lb__thumb--yt ${mediaSlot === 'video' ? 'is-active' : ''}`}
+                  onClick={() => setMediaSlot('video')}
+                  aria-label="Play video"
+                >
+                  <span className="aa-lb__thumb-play">▶</span>
+                </button>
+                {photoSlides.map((imgUrl, i) => (
+                  <button
+                    key={i}
+                    className={`aa-lb__thumb ${mediaSlot === i ? 'is-active' : ''}`}
+                    style={{backgroundImage:`url(${imgUrl})`}}
+                    onClick={() => setMediaSlot(i)}
+                    aria-label={`Photo ${i + 1}`}
+                  />
                 ))}
               </div>
-              <div className="aa-lb__counter">{slide + 1} / {total}</div>
-            </React.Fragment>
-          )}
-        </div>
-        <div className="aa-lb__body">
-          <div className="aa-lb__no">{p.client} · {p.year}</div>
-          <h3 className="aa-lb__title">{p.title}</h3>
-          <div className="aa-lb__kind">{p.kind}</div>
-          {p.tags && p.tags.length > 0 && (
-            <div className="aa-lb__tags">
-              {p.tags.map((tag) => <span key={tag} className="aa-lb__tag">{tag}</span>)}
-            </div>
-          )}
-          <p className="aa-lb__desc">{p.desc}</p>
-          <dl className="aa-lb__meta">
-            <div><dt>Role</dt><dd>{p.role}</dd></div>
-            <div><dt>Team</dt><dd>{p.team}</dd></div>
-          </dl>
-          <div style={{display:'flex', gap:12, flexWrap:'wrap'}}>
-            {p.link && p.link.length > 0 && (
-              <a href={p.link} target="_blank" rel="noreferrer" className="aa-btn aa-btn--inv">
-                View project <span className="arrow">↗</span>
-              </a>
             )}
-            <a href="#contact" className="aa-btn aa-btn--inv" onClick={onClose} style={{background:'var(--fg-1)', color:'var(--bg-1)', borderColor:'var(--fg-1)'}}>
-              Discuss a similar brief <span className="arrow">→</span>
-            </a>
           </div>
-        </div>
+        ) : (
+          /* ── Gallery-only mode: existing carousel ── */
+          <div className="aa-lb__carousel">
+            <div className="aa-lb__slides">
+              {photoSlides ? (
+                photoSlides.map((imgUrl, i) => (
+                  <div key={i} className={`aa-lb__slide ${i === slide ? 'is-active' : ''}`} aria-hidden={i !== slide}>
+                    <div className="aa-pc__art" style={{backgroundImage:`url(${imgUrl})`, backgroundSize:'cover', backgroundPosition:'center', position:'absolute', inset:0}} />
+                  </div>
+                ))
+              ) : (
+                artSlides.map((art, i) => (
+                  <div key={i} className={`aa-lb__slide ${i === slide ? 'is-active' : ''}`} aria-hidden={i !== slide}>
+                    <div className={`aa-pc__art aa-pc__art--${art}`} />
+                  </div>
+                ))
+              )}
+            </div>
+            {total > 1 && (
+              <React.Fragment>
+                <button className="aa-lb__arrow aa-lb__arrow--prev" onClick={prev} disabled={slide === 0} aria-label="Previous">←</button>
+                <button className="aa-lb__arrow aa-lb__arrow--next" onClick={next} disabled={slide === total - 1} aria-label="Next">→</button>
+                <div className="aa-lb__dots">
+                  {Array.from({length: total}).map((_, i) => (
+                    <button key={i} className={`aa-lb__dot ${i === slide ? 'is-active' : ''}`} onClick={() => setSlide(i)} aria-label={`Slide ${i + 1}`} />
+                  ))}
+                </div>
+                <div className="aa-lb__counter">{slide + 1} / {total}</div>
+              </React.Fragment>
+            )}
+          </div>
+        )}
+
+        {infoPanel}
       </div>
     </div>
   );
