@@ -335,6 +335,12 @@ function ManifestoStrip() {
   );
 }
 
+/* Converts *word* → <em>word</em> (handwritten font + yellow) in CMS text fields */
+function parseEmphasis(text) {
+  if (!text) return '';
+  return text.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
+}
+
 function AboutSection({ about }) {
   const a = about || ABOUT_DEFAULT;
   return (
@@ -344,15 +350,11 @@ function AboutSection({ about }) {
         <div className="aa-about__portrait" aria-label="Aviv Agami">
           <img src={a.portrait} alt="Aviv Agami" style={{width:'100%', height:'100%', objectFit:'cover', display:'block'}} />
         </div>
-        <h2 className="aa-about__lede">
-          {a.lede.split('cut through').length > 1
-            ? <React.Fragment>{a.lede.split('cut through')[0]}<em>cut through</em>{a.lede.split('cut through')[1]}</React.Fragment>
-            : a.lede}
-        </h2>
-        <p className="aa-about__body" dangerouslySetInnerHTML={{__html: a.bio1.replace('Creative Director', '<strong>Creative Director</strong>')}} />
-        <p className="aa-about__body" dangerouslySetInnerHTML={{__html: a.bio2.replace('generative AI', '<strong>generative AI</strong>')}} />
-        <p className="aa-about__body">{a.bio3}</p>
-        <p className="aa-about__body">{a.bio4}</p>
+        <h2 className="aa-about__lede" dangerouslySetInnerHTML={{__html: parseEmphasis(a.lede)}} />
+        {a.bio1 && <p className="aa-about__body" dangerouslySetInnerHTML={{__html: parseEmphasis(a.bio1)}} />}
+        {a.bio2 && <p className="aa-about__body" dangerouslySetInnerHTML={{__html: parseEmphasis(a.bio2)}} />}
+        {a.bio3 && <p className="aa-about__body" dangerouslySetInnerHTML={{__html: parseEmphasis(a.bio3)}} />}
+        {a.bio4 && <p className="aa-about__body" dangerouslySetInnerHTML={{__html: parseEmphasis(a.bio4)}} />}
         <span className="aa-about__signature">Aviv</span>
       </div>
       <div className="aa-caps">

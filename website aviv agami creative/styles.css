@@ -316,6 +316,7 @@ body[data-theme="dark"] .aa-logo:not(.aa-logo--inverse) .aa-logo__creative { col
 .aa-about__lede em { font-family: var(--font-script); font-style: normal; color: var(--accent); font-weight: 600; }
 .aa-about__body { font-family: var(--font-sans); font-size: 17px; line-height: 1.6; color: var(--fg-2); margin: 0 0 20px; max-width: 56ch; }
 .aa-about__body strong { color: var(--fg-1); font-weight: 500; }
+.aa-about__body em { font-family: var(--font-script); font-style: normal; color: var(--accent); font-weight: 600; }
 .aa-about__signature { font-family: var(--font-script); font-weight: 600; font-size: 32px; color: var(--accent); transform: rotate(-4deg); display: inline-block; margin-top: 24px; }
 
 .aa-caps { display: flex; flex-direction: column; }
