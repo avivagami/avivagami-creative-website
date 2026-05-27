@@ -47,7 +47,21 @@ collections:
                   - { label: "Narrow (5 col)",value: w5  }
                   - { label: "Narrow (4 col)",value: w4  }
                 default: w6
-              - { name: desc,  label: Description, widget: text }
+              - name: brief
+                label: "The Brief"
+                widget: text
+                required: false
+                hint: "What was the creative challenge or goal? Shown as the first section in the project lightbox."
+              - name: experience
+                label: "The Experience"
+                widget: text
+                required: false
+                hint: "What was created, staged, or delivered? Shown as the second section in the project lightbox."
+              - name: desc
+                label: Description (legacy)
+                widget: text
+                required: false
+                hint: "Older fallback field — only used if The Brief is empty. New projects should use The Brief / The Experience fields above."
               - name: tags
                 label: Tags
                 widget: list

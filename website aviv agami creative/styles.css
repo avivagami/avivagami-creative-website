@@ -453,7 +453,10 @@ body[data-theme="dark"] .aa-logo:not(.aa-logo--inverse) .aa-logo__creative { col
 .aa-lb__meta { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px 24px; padding: 20px 0; border-top: 1px solid var(--border-soft); }
 .aa-lb__meta dt { font-family: var(--font-mono); font-size: 10px; color: var(--fg-3); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 4px; }
 .aa-lb__meta dd { font-family: var(--font-sans); font-size: 15px; margin: 0; }
-.aa-lb__desc { font-family: var(--font-sans); font-size: 16px; line-height: 1.6; color: var(--fg-2); margin: 0; }
+.aa-lb__sections { display: flex; flex-direction: column; gap: 20px; }
+.aa-lb__section { display: flex; flex-direction: column; gap: 6px; }
+.aa-lb__section-label { font-family: var(--font-mono); font-size: 10px; color: var(--accent); letter-spacing: .1em; text-transform: uppercase; }
+.aa-lb__section-text { font-family: var(--font-sans); font-size: 15px; line-height: 1.65; color: var(--fg-2); margin: 0; }
 
 /* YouTube layout inside lightbox */
 .aa-lb__carousel--yt { display: flex; flex-direction: column; overflow: hidden; }

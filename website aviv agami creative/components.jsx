@@ -570,7 +570,22 @@ function ProjectLightbox({ p, onClose }) {
           {p.tags.map((tag) => <span key={tag} className="aa-lb__tag">{tag}</span>)}
         </div>
       )}
-      <p className="aa-lb__desc">{p.desc}</p>
+      {(p.brief || p.experience || p.desc) && (
+        <div className="aa-lb__sections">
+          {(p.brief || p.desc) && (
+            <div className="aa-lb__section">
+              <div className="aa-lb__section-label">The Brief</div>
+              <p className="aa-lb__section-text">{p.brief || p.desc}</p>
+            </div>
+          )}
+          {p.experience && (
+            <div className="aa-lb__section">
+              <div className="aa-lb__section-label">The Experience</div>
+              <p className="aa-lb__section-text">{p.experience}</p>
+            </div>
+          )}
+        </div>
+      )}
       <dl className="aa-lb__meta">
         <div><dt>Role</dt><dd>{p.role}</dd></div>
         <div><dt>Team</dt><dd>{p.team}</dd></div>
