@@ -40,8 +40,14 @@ body[data-theme="dark"] {
   padding: 18px 32px;
   border-bottom: 1px solid var(--border-soft);
   background: var(--bg-1);
-  position: sticky; top: 0; z-index: 50;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  background: color-mix(in srgb, var(--bg-1) 85%, transparent);
 }
+
+/* Offset main content so it doesn't hide under the fixed nav (nav ~65px tall) */
+main { padding-top: 65px; }
 .aa-nav__brand { display: inline-flex; align-items: center; text-decoration: none; color: inherit; padding: 0 14px 0 0; }
 .aa-nav__items { display: flex; gap: 28px; justify-self: center; }
 .aa-nav__link { font-family: var(--font-sans); font-size: 14px; color: var(--fg-1); text-decoration: none; position: relative; transition: color .12s var(--ease-out); }
@@ -108,7 +114,7 @@ body[data-theme="dark"] .aa-logo:not(.aa-logo--inverse) .aa-logo__creative { col
 .aa-logo--sz-xs { --aa-logo-size: 13px; }
 
 /* ===== HERO ===== */
-.aa-hero { position: relative; padding: 88px 0 56px; }
+.aa-hero { position: relative; padding: 88px 32px 56px; }
 
 /* Variant: scale — giant headline, hangs to edges */
 .aa-hero--scale .aa-hero__title {
@@ -121,7 +127,7 @@ body[data-theme="dark"] .aa-logo:not(.aa-logo--inverse) .aa-logo__creative { col
 }
 .aa-hero--scale .aa-hero__title .aa-hero__hand {
   font-family: var(--font-script); font-weight: 600;
-  color: var(--accent); font-size: 0.75em;
+  color: var(--accent); font-size: 1.25em;
   letter-spacing: 0; line-height: 0.9;
   display: inline-block; transform: rotate(-4deg) translateY(-0.06em);
   padding: 0 0.04em;
@@ -196,10 +202,12 @@ body[data-theme="dark"] .aa-logo:not(.aa-logo--inverse) .aa-logo__creative { col
 /* ===== Marquee ===== */
 .aa-marquee { overflow: hidden; border-top: 1.5px dashed var(--fg-1); border-bottom: 1.5px dashed var(--fg-1); padding: 22px 0; background: var(--bg-1); }
 .aa-marquee--ink { background: var(--bg-inverse); color: var(--fg-inverse); border-color: var(--fg-inverse); }
-.aa-marquee__track { display: flex; gap: 56px; white-space: nowrap; animation: aa-marq 40s linear infinite; will-change: transform; }
-.aa-marquee__item { font-family: var(--font-sans); font-weight: 500; font-size: 64px; line-height: 1; letter-spacing: -2.5px; display: inline-flex; align-items: center; gap: 28px; }
-.aa-marquee__dot { display: inline-block; width: 16px; height: 16px; border-radius: 999px; background: var(--aa-sun); box-shadow: 0 0 0 1.5px var(--fg-1); flex: none; }
-.aa-marquee--ink .aa-marquee__dot { box-shadow: 0 0 0 1.5px var(--fg-inverse); }
+.aa-marquee__track { display: flex; align-items: center; gap: 0; white-space: nowrap; animation: aa-marq 30s linear infinite; will-change: transform; }
+.aa-marquee__item { display: inline-flex; align-items: center; gap: 48px; padding: 0 48px; }
+.aa-marquee__logo { height: 32px; width: auto; max-width: 150px; object-fit: contain; filter: brightness(0) invert(1); opacity: 1; flex: none; }
+.aa-marquee__logo--raw { filter: none; }
+.aa-marquee__dot { display: inline-block; width: 6px; height: 6px; border-radius: 999px; background: var(--accent); flex: none; }
+.aa-marquee--ink .aa-marquee__dot { background: var(--accent); }
 @keyframes aa-marq { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
 /* ===== Section header ===== */
@@ -313,10 +321,10 @@ body[data-theme="dark"] .aa-logo:not(.aa-logo--inverse) .aa-logo__creative { col
 .aa-about__portrait-x { position: absolute; inset: 0; width: 100%; height: 100%; stroke: var(--border-soft); stroke-width: 1; }
 .aa-about__portrait-tag { position: absolute; left: 14px; bottom: 14px; font-family: var(--font-mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--fg-3); background: var(--bg-1); padding: 4px 8px; }
 .aa-about__lede { font-family: var(--font-sans); font-weight: 400; font-size: clamp(32px, 3.4vw, 48px); line-height: 1.12; letter-spacing: -0.02em; margin: 0 0 24px; max-width: 18ch; }
-.aa-about__lede em { font-family: var(--font-script); font-style: normal; color: var(--accent); font-weight: 600; }
+.aa-about__lede em { font-family: var(--font-script); font-style: normal; color: var(--accent); font-weight: 600; font-size: 1.4em; }
 .aa-about__body { font-family: var(--font-sans); font-size: 17px; line-height: 1.6; color: var(--fg-2); margin: 0 0 20px; max-width: 56ch; }
 .aa-about__body strong { color: var(--fg-1); font-weight: 500; }
-.aa-about__body em { font-family: var(--font-script); font-style: normal; color: var(--accent); font-weight: 600; }
+.aa-about__body em { font-family: var(--font-script); font-style: normal; color: var(--accent); font-weight: 600; font-size: 1.4em; }
 .aa-about__signature { font-family: var(--font-script); font-weight: 600; font-size: 32px; color: var(--accent); transform: rotate(-4deg); display: inline-block; margin-top: 24px; }
 
 .aa-caps { display: flex; flex-direction: column; }
@@ -337,9 +345,12 @@ body[data-theme="dark"] .aa-logo:not(.aa-logo--inverse) .aa-logo__creative { col
 
 /* ===== Manifesto strip ===== */
 .aa-manifesto { padding: 128px 0; text-align: left; border-top: 1px solid var(--border-strong); }
-.aa-manifesto__pull { font-family: var(--font-sans); font-weight: 400; font-size: clamp(40px, 6vw, 96px); line-height: 1.02; letter-spacing: -0.035em; margin: 0; max-width: 18ch; }
-.aa-manifesto__pull em { font-family: var(--font-script); font-style: normal; color: var(--accent); font-weight: 600; }
-.aa-manifesto__by { display: flex; gap: 16px; margin-top: 48px; font-family: var(--font-mono); font-size: 11px; color: var(--fg-3); letter-spacing: .08em; text-transform: uppercase; }
+.aa-manifesto__pull { font-family: var(--font-sans); font-weight: 400; font-size: clamp(40px, 6vw, 96px); line-height: 1.02; letter-spacing: -0.035em; margin: 0; max-width: 18ch; animation: aa-fade-in .35s var(--ease-out); }
+.aa-manifesto__pull em { font-family: var(--font-script); font-style: normal; color: var(--accent); font-weight: 600; font-size: 1.15em; }
+.aa-manifesto__by { display: flex; align-items: center; gap: 16px; margin-top: 48px; font-family: var(--font-mono); font-size: 11px; color: var(--fg-3); letter-spacing: .08em; text-transform: uppercase; }
+.aa-manifesto__btn { background: none; border: 1px solid var(--border-soft); color: var(--fg-1); font-family: var(--font-sans); font-size: 16px; width: 36px; height: 36px; border-radius: 999px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s var(--ease-out), border-color .15s var(--ease-out), color .15s var(--ease-out); }
+.aa-manifesto__btn:hover { background: var(--accent); border-color: var(--accent); color: var(--aa-paper); }
+@keyframes aa-fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
 /* ===== Contact ===== */
 .aa-contact-wrap { background: var(--bg-inverse); color: var(--fg-inverse); margin: 0 -32px; padding: 0 32px; }
@@ -374,7 +385,8 @@ body[data-theme="dark"] .aa-logo:not(.aa-logo--inverse) .aa-logo__creative { col
 [data-theme="dark"] .aa-field select { border-bottom-color: rgba(10,10,10,.32); }
 .aa-field input:focus, .aa-field textarea:focus, .aa-field select:focus { border-bottom-color: var(--accent); }
 .aa-field--focus > span { color: var(--accent); }
-.aa-field select { cursor: pointer; padding-right: 28px; background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%); background-position: calc(100% - 12px) 50%, calc(100% - 6px) 50%; background-size: 6px 6px, 6px 6px; background-repeat: no-repeat; }
+.aa-field select { cursor: pointer; padding-right: 28px; font-family: var(--font-sans) !important; background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%); background-position: calc(100% - 12px) 50%, calc(100% - 6px) 50%; background-size: 6px 6px, 6px 6px; background-repeat: no-repeat; }
+.aa-field select option { font-family: var(--font-sans); }
 .aa-field__row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
 
 .aa-btn { font-family: var(--font-sans); font-size: 14px; padding: 18px 28px; border-radius: 0; cursor: pointer; transition: all .15s var(--ease-out); border: 1px solid transparent; align-self: flex-start; display: inline-flex; align-items: center; gap: 12px; }

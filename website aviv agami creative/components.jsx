@@ -95,11 +95,11 @@ const SETTINGS_DEFAULT = {
 };
 
 const CAPS = [
-  { num: '01', name: 'Creative direction',     yrs: '10 yrs', desc: 'Concept-to-stage on campaigns, films and live events. The kind of direction where the script, the visual, and the room are one decision.' },
-  { num: '02', name: 'Video & film',            yrs: '08 yrs', desc: 'Campaign films, recap films, social cutdowns, concert capture. Direction, edit room and final delivery.' },
-  { num: '03', name: 'Live event direction',    yrs: '07 yrs', desc: 'Keynotes, festivals, residencies, museum activations. Stage, script, visuals, directed as one piece.' },
-  { num: '04', name: 'Generative AI pipelines', yrs: '03 yrs', desc: 'Production tooling that mixes generative imagery with directed work. Human stays in the room. Speed without flattening.' },
-  { num: '05', name: 'Copy & script',           yrs: '10 yrs', desc: 'Manifestos, scripts, taglines, deck copy. Sentences that survive the legal review.' },
+  { num: '01', name: 'Creative direction',           yrs: '10 yrs', desc: 'Concept-to-stage for live events and digital experiences. The kind of direction where the script, the visual, and the physical space are a single, unified vibe.' },
+  { num: '02', name: 'Copy & script',                yrs: '10 yrs', desc: 'Manifestos, modular video scripts, taglines, and pitch decks. Words engineered to capture attention, and sentences that actually survive the legal review.' },
+  { num: '03', name: 'Video & visual content',       yrs: '09 yrs', desc: 'Campaign videos, social content, recap videos, and graphic design. From crafting high-velocity videos to the static graphics that pop.' },
+  { num: '04', name: 'Experiential & live events',   yrs: '08 yrs', desc: 'Keynotes, interactive brand takeovers, and phygital activations. Stage, script, and visual design, orchestrated as one immersive experience.' },
+  { num: '05', name: 'Generative AI creations',      yrs: '04 yrs', desc: 'Custom production workflows blending advanced generative tools with directed art. Accelerated output without losing the human touch. The tech scales, but the human stays in control.' },
 ];
 
 function Nav({ settings, about }) {
@@ -176,10 +176,10 @@ function Hero({ variant }) {
           <span>№ 026</span><span className="dot"></span><span>Independent · Spring '26</span>
         </div>
         <h1 className="aa-hero__title">
-          Your message, in a <span className="aa-hero__hand">new light</span>.
+          Your message,<br/> in a <span className="aa-hero__hand">new light</span>.
         </h1>
         <p className="aa-hero__sub">
-          Creative direction, films and live events for studios, founders and cultural moments. Concept-first. Everything else follows.
+          Creative direction, interactive live events, AI video creation for global players. A decade turning digital static into impact people actually remember.
         </p>
       </section>
     );
@@ -209,8 +209,8 @@ function ScaleHero() {
   }, []);
   const titleNode = (
     <React.Fragment>
-      <h1 className="aa-hero__title">Your message, in&nbsp;a <span className="aa-hero__hand">new light</span>.</h1>
-      <p className="aa-hero__sub">Creative direction, films and live events for studios, founders and cultural moments. A decade turning concepts into work people actually remember.</p>
+      <h1 className="aa-hero__title">Your message,<br/> in a <span className="aa-hero__hand">new light</span>.</h1>
+      <p className="aa-hero__sub">Creative direction, interactive live events, AI video creation for global players. A decade turning digital static into impact people actually remember.</p>
     </React.Fragment>
   );
   return (
@@ -231,17 +231,24 @@ function ScrollCue() {
   );
 }
 
-function Marquee({ projects, variant }) {
-  const list = (projects && projects.length > 0)
-    ? ['Selected work', ...projects.slice(0, 5).map((p, i) => `№ ${String(projects.length - i).padStart(3, '0')} · ${p.title}`)]
-    : ['Selected work', '№ 026 · Architecture of Attention', '№ 025 · Signal in the noise', '№ 024 · A film for an opening', '№ 023 · Generative pipeline', '№ 022 · Concert visuals'];
-  const doubled = [...list, ...list];
+const MARQUEE_LOGOS = [
+  { src: '/images/logos/tiktok.svg',    alt: 'TikTok',    height: 42 },
+  { src: '/images/logos/lusha.png',     alt: 'Lusha'     },
+  { src: '/images/logos/microsoft.png', alt: 'Microsoft' },
+  { src: '/images/logos/melio.svg',     alt: 'Melio'     },
+  { src: '/images/logos/variety.svg',   alt: 'Variety'   },
+  { src: '/images/logos/gorilla.svg',   alt: 'Gorilla',   height: 22 },
+  { src: '/images/logos/autodesk.png',  alt: 'Autodesk',  raw: true  },
+];
+
+function Marquee({ variant }) {
+  const doubled = [...MARQUEE_LOGOS, ...MARQUEE_LOGOS];
   return (
     <div className={`aa-marquee ${variant === 'ink' ? 'aa-marquee--ink' : ''}`}>
       <div className="aa-marquee__track">
-        {doubled.map((label, idx) => (
+        {doubled.map((logo, idx) => (
           <span key={idx} className="aa-marquee__item">
-            {label}
+            <img src={logo.src} alt={logo.alt} className={`aa-marquee__logo${logo.raw ? ' aa-marquee__logo--raw' : ''}`} style={logo.height ? {height: logo.height + 'px'} : undefined} />
             <span className="aa-marquee__dot" />
           </span>
         ))}
@@ -307,7 +314,7 @@ function WorkSection({ projects, onOpen }) {
       <div className="aa-sec-head">
         <div>
           <div className="aa-sec-head__label">№ 01 · Selected work</div>
-          <h2 className="aa-sec-head__title">Things <em>worth</em> remembering.</h2>
+          <h2 className="aa-sec-head__title">Moments <em>worth</em> remembering.</h2>
         </div>
         <div className="aa-sec-head__meta">{list.length} projects · '24 to '26</div>
       </div>
@@ -320,16 +327,28 @@ function WorkSection({ projects, onOpen }) {
   );
 }
 
+const PRINCIPLES = [
+  <>Built to be <em>remembered</em>, not just seen. Every layout, every shot, every sentence. Earning its place in the room.</>,
+  <>Discipline over <em>decoration</em>. In a world of endless digital static, the goal is to cut right through it. Every detail must serve a clear, strategic purpose.</>,
+  <>Tech accelerates. <em>Humans connect.</em> Advanced tools and generative AI move at the speed of tech, they don't replace the human touch. They are the engine, not the driver.</>,
+  <><em>Experiences</em>, not just spectacles. Whether designing a 10-meter physical running track or scripting a fast-paced video, the physical and the digital must fuse into one cohesive, immersive narrative.</>,
+  <><em>Safe</em> is invisible. True engagement requires a willingness to challenge the expected. It takes bold choices, unexpected creative leaps, and sometimes, a healthy dose of curated chaos.</>,
+];
+
 function ManifestoStrip() {
+  const [idx, setIdx] = React.useState(0);
+  const prev = () => setIdx((i) => (i - 1 + PRINCIPLES.length) % PRINCIPLES.length);
+  const next = () => setIdx((i) => (i + 1) % PRINCIPLES.length);
   return (
     <section className="aa-manifesto">
-      <p className="aa-manifesto__pull">
-        Built to be <em>remembered</em>, not just seen. Every layout, every shot, every sentence. Earning its place in the room.
+      <p className="aa-manifesto__pull" key={idx}>
+        {PRINCIPLES[idx]}
       </p>
       <div className="aa-manifesto__by">
-        <span>Studio principle № 01</span>
+        <span>Creative principle № 0{idx + 1} / 05</span>
         <span>·</span>
-        <span>Read all five ↗</span>
+        <button className="aa-manifesto__btn" onClick={prev} aria-label="Previous principle">←</button>
+        <button className="aa-manifesto__btn" onClick={next} aria-label="Next principle">→</button>
       </div>
     </section>
   );
@@ -401,7 +420,9 @@ function ContactSection({ settings }) {
           <div className="aa-sec-head__label" style={{color: 'rgba(236,238,234,.55)', marginBottom: 24}}>№ 03 · Contact</div>
           <h2 className="aa-contact__title">Tell me your <em>message</em>.</h2>
           <p className="aa-contact__sub">
-            Briefs, residencies, one-offs. I reply within two working days. For urgent commissions, write <em style={{fontStyle:'italic'}}>urgent</em> in the subject.
+            Briefs, residencies, one-offs.<br/>
+            I reply within two working days.<br/>
+            For urgent commissions, write <em style={{fontStyle:'italic'}}>urgent</em> in the subject.
           </p>
           <div className="aa-contact__direct">
             <div className="aa-contact__d">
@@ -449,9 +470,9 @@ function ContactSection({ settings }) {
               <input name="company" value={form.company} onChange={set('company')} onFocus={() => setFocus('company')} onBlur={() => setFocus('')} placeholder="Optional" />
             </label>
             <label className={fld('type')}>
-              <span>04 · Project type</span>
-              <select name="type" required value={form.type} onChange={set('type')} onFocus={() => setFocus('type')} onBlur={() => setFocus('')}>
-                <option value="">Select one</option>
+              <span>04 · What experience will we create?</span>
+              <select name="type" required value={form.type} onChange={set('type')} onFocus={() => setFocus('type')} onBlur={() => setFocus('')} style={{fontFamily:'var(--font-sans)'}}>
+                <option value="" style={{fontFamily:'var(--font-sans)'}}>Select one</option>
                 <option>Campaign film</option>
                 <option>Live event direction</option>
                 <option>Keynote / stage</option>
@@ -462,7 +483,7 @@ function ContactSection({ settings }) {
             </label>
             <label className={fld('message')}>
               <span>05 · Message</span>
-              <textarea name="message" rows="4" required value={form.message} onChange={set('message')} onFocus={() => setFocus('message')} onBlur={() => setFocus('')} placeholder="One sentence on what you want remembered." />
+              <textarea name="message" rows="4" required value={form.message} onChange={set('message')} onFocus={() => setFocus('message')} onBlur={() => setFocus('')} placeholder="what your audience will remember?" />
             </label>
             {submitError && (
               <p style={{fontFamily:'var(--font-mono)', fontSize:12, color:'var(--aa-signal)', margin:0}}>
@@ -483,7 +504,7 @@ function Footer({ settings, projects }) {
   const s = settings || SETTINGS_DEFAULT;
   return (
     <footer className="aa-footer">
-      <Marquee variant="" projects={projects} />
+      <Marquee variant="" />
       <div className="aa-footer__row">
         <div className="aa-footer__brand">
           <span className="aa-logo aa-logo--sz-m">

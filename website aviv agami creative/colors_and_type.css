@@ -14,8 +14,8 @@
   --aa-ink:          #0A0A0A;   /* primary text & line */
   --aa-signal:       #E63946;   /* primary accent — red */
   --aa-signal-press: #C42E3A;
-  --aa-sun:          #FFE500;   /* secondary accent — electric pop yellow */
-  --aa-sun-press:    #E6CE00;
+  --aa-sun:          #c439bd;   /* secondary accent — electric pop purple */
+  --aa-sun-press:    #a92fa3;
   --aa-paper-fallback-rgb: 236, 238, 234;   /* darker signal for active state */
 
   /* ---------- Color: semantic ---------- */
