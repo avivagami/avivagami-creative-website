@@ -7,7 +7,7 @@ Read this before touching anything.
 ## What this is
 
 Portfolio site for Aviv Agami, Creative Director based in Tel Aviv.
-Live URL: https://portfollioaviv.netlify.app
+Live URL: https://avivagami.com
 GitHub repo: https://github.com/avivagami/avivagami-creative-website
 
 ---
@@ -43,7 +43,7 @@ This means:
 
 ## Decap CMS (admin)
 
-URL: https://portfollioaviv.netlify.app/admin/
+URL: https://avivagami.com/admin/
 Auth: Netlify Identity (git-gateway backend)
 
 The CMS edits JSON files and uploads images via git-gateway, which commits directly to GitHub. Every CMS save = 1 GitHub commit = 1 Netlify deploy trigger.
