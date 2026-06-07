@@ -70,9 +70,7 @@
               <ManifestoStrip />
               <AboutSection about={about} />
             </div>
-            <div className="aa-page" style={{padding: 0}}>
-              <ContactSection settings={settings} />
-            </div>
+            <ContactSection settings={settings} />
           </main>
           <Footer settings={settings} projects={projects} />
           <ProjectLightbox p={openProject} onClose={() => setOpenProject(null)} />

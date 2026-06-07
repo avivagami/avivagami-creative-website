@@ -12,8 +12,8 @@
   --aa-stone:        #8A857C;   /* tertiary text, captions */
   --aa-graphite:     #2A2926;   /* never-quite-black support */
   --aa-ink:          #0A0A0A;   /* primary text & line */
-  --aa-signal:       #E63946;   /* primary accent — red */
-  --aa-signal-press: #C42E3A;
+  --aa-signal:       #FF0080;   /* primary accent — neon pink */
+  --aa-signal-press: #d60070;
   --aa-sun:          #c439bd;   /* secondary accent — electric pop purple */
   --aa-sun-press:    #a92fa3;
   --aa-paper-fallback-rgb: 236, 238, 234;   /* darker signal for active state */

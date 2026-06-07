@@ -128,7 +128,6 @@ function Nav({ settings, about }) {
     <header className="aa-nav">
       <a href="#" className="aa-nav__brand" onClick={go('top')} aria-label="AA creative">
         <span className="aa-logo aa-logo--sz-s">
-          <span className="aa-logo__dot"></span>
           <span className="aa-logo__name">Aviv Agami</span>
           <span className="aa-logo__sep"></span>
           <span className="aa-logo__creative">creative</span>
@@ -259,26 +258,35 @@ function Marquee({ variant }) {
 
 function ProjectImageGrid({ p, idx }) {
   const hasGallery = p.gallery && p.gallery.length > 0;
+  const mainArt = ART_CYCLE[idx % ART_CYCLE.length];
+
+  if (!hasGallery) {
+    return (
+      <div className="aa-pc__grid">
+        <div className="aa-pc__grid-main">
+          <div className={`aa-pc__art aa-pc__art--${mainArt}`} />
+        </div>
+      </div>
+    );
+  }
+
+  const [mainImg, ...thumbImgs] = p.gallery;
   return (
     <div className="aa-pc__grid">
-      {[0, 1].map((row) => (
-        <div key={row} className="aa-pc__grid-row">
-          {[0, 1, 2].map((col) => {
-            const cellIdx = row * 3 + col;
-            const art = ART_CYCLE[(idx + cellIdx) % ART_CYCLE.length];
-            const imgUrl = hasGallery ? p.gallery[cellIdx % p.gallery.length] : null;
-            const isFeatured = row === 0 && col === 0 && hasGallery;
-            return (
-              <div key={col} className={`aa-pc__grid-cell${isFeatured ? ' aa-pc__grid-cell--featured' : ''}`}>
-                <div
-                  className={`aa-pc__art ${imgUrl ? 'aa-pc__art--photo' : `aa-pc__art--${art}`}`}
-                  style={imgUrl ? { backgroundImage: `url(${imgUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
-                />
-              </div>
-            );
-          })}
+      <div className="aa-pc__grid-main">
+        <div className="aa-pc__art aa-pc__art--photo"
+          style={{ backgroundImage: `url(${mainImg})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+      </div>
+      {thumbImgs.length > 0 && (
+        <div className="aa-pc__grid-thumbs">
+          {thumbImgs.map((imgUrl, i) => (
+            <div key={i} className="aa-pc__grid-thumb">
+              <div className="aa-pc__art aa-pc__art--photo"
+                style={{ backgroundImage: `url(${imgUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+            </div>
+          ))}
         </div>
-      ))}
+      )}
     </div>
   );
 }
@@ -302,7 +310,13 @@ function ProjectCard({ p, idx, onOpen }) {
         <span className="yr">{p.year}</span>
       </div>
       <div className="aa-pc__title">{p.title}</div>
-      <div className="aa-pc__kind">{p.kind}</div>
+      {(p.tags && p.tags.length > 0 || p.kind) && (
+        <div className="aa-pc__tags">
+          {(p.tags && p.tags.length > 0 ? p.tags : p.kind.split(' · ')).map((tag) => (
+            <span key={tag} className="aa-pc__tag">{tag}</span>
+          ))}
+        </div>
+      )}
     </a>
   );
 }
@@ -313,8 +327,8 @@ function WorkSection({ projects, onOpen }) {
     <section className="aa-work" id="work">
       <div className="aa-sec-head">
         <div>
-          <div className="aa-sec-head__label">№ 01 · Selected work</div>
           <h2 className="aa-sec-head__title">Moments <em>worth</em> remembering.</h2>
+          <div className="aa-sec-head__label">Selected work</div>
         </div>
         <div className="aa-sec-head__meta">{list.length} projects · '24 to '26</div>
       </div>
@@ -587,7 +601,6 @@ function ProjectLightbox({ p, onClose }) {
     <div className="aa-lb__body">
       <div className="aa-lb__no">{p.client} · {p.year}</div>
       <h3 className="aa-lb__title">{p.title}</h3>
-      <div className="aa-lb__kind">{p.kind}</div>
       {p.tags && p.tags.length > 0 && (
         <div className="aa-lb__tags">
           {p.tags.map((tag) => <span key={tag} className="aa-lb__tag">{tag}</span>)}
