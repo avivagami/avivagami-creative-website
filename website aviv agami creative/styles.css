@@ -189,6 +189,12 @@ body[data-theme="dark"] .aa-logo:not(.aa-logo--inverse) .aa-logo__creative { col
 .aa-hero--flashlight .aa-hero__layer--inverse .aa-hero__sub { color: var(--bg-1); }
 .aa-hero--flashlight .aa-hero__layer--inverse .aa-hero__hand { color: var(--aa-sun); }
 
+/* Mobile layout fixes */
+@media (max-width: 600px) {
+  /* Hero: shrink so "in a new light." fits on one line */
+  .aa-hero--scale .aa-hero__title { font-size: clamp(32px, 8vw, 80px); }
+}
+
 /* hero scroll cue */
 .aa-scroll-cue {
   position: absolute; right: 32px; bottom: 24px;
@@ -216,6 +222,13 @@ body[data-theme="dark"] .aa-logo:not(.aa-logo--inverse) .aa-logo__creative { col
 .aa-sec-head__title { font-family: var(--font-sans); font-weight: 500; font-size: clamp(40px, 5vw, 72px); letter-spacing: -0.02em; line-height: 1; margin: 0; }
 .aa-sec-head__title em { font-family: var(--font-script); font-style: normal; color: var(--accent); font-weight: 600; }
 .aa-sec-head__meta { font-family: var(--font-mono); font-size: 11px; color: var(--fg-3); letter-spacing: .08em; text-transform: uppercase; padding-bottom: 6px; }
+
+/* Section header — mobile overrides (must be AFTER base rules to win cascade) */
+@media (max-width: 600px) {
+  .aa-sec-head { grid-template-columns: 1fr; padding: 56px 0 32px; gap: 12px; }
+  .aa-sec-head__title { font-size: clamp(52px, 14vw, 80px) !important; line-height: 1; }
+  .aa-sec-head__meta { padding-bottom: 0; }
+}
 
 /* ===== Work / Project grid ===== */
 .aa-work { padding: 0 0 96px; }
