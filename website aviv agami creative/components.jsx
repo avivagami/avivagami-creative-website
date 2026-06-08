@@ -522,7 +522,6 @@ function Footer({ settings, projects }) {
       <div className="aa-footer__row">
         <div className="aa-footer__brand">
           <span className="aa-logo aa-logo--sz-m">
-            <span className="aa-logo__dot"></span>
             <span className="aa-logo__name">Aviv Agami</span>
             <span className="aa-logo__sep"></span>
             <span className="aa-logo__creative">creative</span>
