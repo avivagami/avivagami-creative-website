@@ -65,8 +65,8 @@
           <main>
             <Hero variant="scale" />
             <Marquee variant="" projects={projects} />
+            <CoverFlowSection projects={projects} onOpen={setOpenProject} />
             <div className="aa-page">
-              <WorkSection projects={projects} onOpen={setOpenProject} />
               <ManifestoStrip />
               <AboutSection about={about} />
             </div>

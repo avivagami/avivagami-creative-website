@@ -432,6 +432,250 @@ body[data-theme="dark"] .aa-logo:not(.aa-logo--inverse) .aa-logo__creative { col
 .aa-sent__body { font-size: 16px; color: rgba(236,238,234,.7); max-width: 36ch; margin: 0 0 32px; }
 [data-theme="dark"] .aa-sent__body { color: rgba(10,10,10,.7); }
 
+/* ========== iPod Cover Flow ========== */
+.aa-ipod {
+  background: #0a0a0a;
+  padding: 80px 0 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.aa-ipod__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 32px;
+  margin-bottom: 56px;
+}
+
+.aa-ipod__title {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: clamp(28px, 3.8vw, 52px);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: rgba(255,255,255,.92);
+  margin: 0;
+}
+
+.aa-ipod__title em {
+  font-family: var(--font-script);
+  font-style: normal;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.aa-ipod__count {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: rgba(255,255,255,.4);
+  letter-spacing: .06em;
+  white-space: nowrap;
+  padding-bottom: 2px;
+}
+
+.aa-ipod__stage {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  perspective: 1100px;
+  overflow: visible;
+  touch-action: pan-y;
+}
+
+.aa-ipod__cover {
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  top: 50%;
+  left: 50%;
+  cursor: pointer;
+  transition: transform .48s cubic-bezier(.4,0,.2,1), opacity .48s ease;
+  will-change: transform, opacity;
+  -webkit-box-reflect: below 3px linear-gradient(transparent 58%, rgba(0,0,0,.32));
+}
+
+.aa-ipod__art {
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,.25), 0 16px 48px rgba(0,0,0,.75), 0 0 0 1px rgba(255,255,255,.07);
+  display: block;
+}
+
+.aa-ipod__cover-shine {
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+  background: linear-gradient(145deg, rgba(255,255,255,.1) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+.aa-ipod__info {
+  margin-top: 84px;
+  text-align: center;
+  min-height: 76px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.aa-ipod__info-title {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 17px;
+  letter-spacing: -.01em;
+  color: rgba(255,255,255,.92);
+}
+
+.aa-ipod__info-meta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.32);
+  margin-bottom: 4px;
+}
+
+.aa-ipod__info-tags { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+
+.aa-ipod__tag {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  background: rgba(255,0,128,.15);
+  border: 1px solid rgba(255,0,128,.35);
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+/* Click Wheel */
+.aa-ipod__wheel {
+  width: 192px;
+  height: 192px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 36% 30%, #3c3c3c, #1c1c1c 55%, #0e0e0e);
+  box-shadow:
+    0 0 0 1.5px rgba(255,255,255,.06),
+    inset 0 1px 0 rgba(255,255,255,.08),
+    inset 0 -1px 0 rgba(0,0,0,.6),
+    0 10px 40px rgba(0,0,0,.85),
+    0 2px 8px rgba(0,0,0,.6);
+  position: relative;
+  margin-top: 40px;
+  user-select: none;
+  touch-action: none;
+  cursor: grab;
+}
+.aa-ipod__wheel:active { cursor: grabbing; }
+
+.aa-ipod__wlabel {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 7.5px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.35);
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+}
+.aa-ipod__wlabel--top    { top: 20px; left: 50%; transform: translateX(-50%); }
+.aa-ipod__wlabel--bottom { bottom: 20px; left: 50%; transform: translateX(-50%); font-size: 9px; }
+.aa-ipod__wlabel--left   { left: 17px; top: 50%; transform: translateY(-50%); font-size: 11px; }
+.aa-ipod__wlabel--right  { right: 17px; top: 50%; transform: translateY(-50%); font-size: 11px; }
+
+.aa-ipod__wheel-center {
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #252525, #0e0e0e);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.07), inset 0 1px 0 rgba(255,255,255,.06), 0 2px 10px rgba(0,0,0,.7);
+  border: none;
+  outline: none;
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  cursor: pointer;
+  transition: transform .07s ease, opacity .07s ease;
+}
+.aa-ipod__wheel-center:active { transform: translate(-50%,-50%) scale(0.93); opacity: .85; }
+
+@media (max-width: 600px) {
+  .aa-ipod { padding: 60px 0 56px; }
+  .aa-ipod__head { padding: 0 20px; margin-bottom: 40px; }
+  .aa-ipod__stage { height: 240px; }
+  .aa-ipod__cover { width: 160px; height: 160px; }
+  .aa-ipod__info { margin-top: 66px; }
+  .aa-ipod__info-title { font-size: 15px; }
+  .aa-ipod__wheel { width: 164px; height: 164px; margin-top: 32px; }
+  .aa-ipod__wheel-center { width: 62px; height: 62px; }
+  .aa-ipod__wlabel--top { top: 16px; }
+  .aa-ipod__wlabel--bottom { bottom: 16px; }
+  .aa-ipod__wlabel--left { left: 13px; }
+  .aa-ipod__wlabel--right { right: 13px; }
+}
+/* Gallery toggle CTA */
+.aa-ipod__gallery-cta {
+  margin-top: 48px;
+  padding-bottom: 56px;
+  display: flex;
+  justify-content: center;
+}
+
+.aa-ipod__gallery-btn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.45);
+  background: transparent;
+  border: 1px solid rgba(255,255,255,.14);
+  padding: 13px 28px;
+  cursor: pointer;
+  transition: color .2s ease, border-color .2s ease, background .2s ease;
+  outline: none;
+  white-space: nowrap;
+}
+
+.aa-ipod__gallery-btn:hover {
+  color: rgba(255,255,255,.85);
+  border-color: rgba(255,255,255,.32);
+  background: rgba(255,255,255,.04);
+}
+
+/* Gallery peek / expanded grid */
+.aa-gallery-peek {
+  background: var(--bg-1);
+  max-height: 540px;
+  overflow: hidden;
+  position: relative;
+  transition: max-height 1.1s cubic-bezier(.4,0,.2,1);
+}
+
+.aa-gallery-peek--open {
+  max-height: 14000px;
+}
+
+.aa-gallery-peek__fade {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 280px;
+  background: linear-gradient(to bottom, transparent, var(--bg-1));
+  pointer-events: none;
+}
+
+/* ========== end Cover Flow ========== */
+
 @media (max-width: 900px) {
   .aa-contact { grid-template-columns: 1fr; gap: 48px; padding: 80px 32px; }
   .aa-field__row { grid-template-columns: 1fr; gap: 20px; }

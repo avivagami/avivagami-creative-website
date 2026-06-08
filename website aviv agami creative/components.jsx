@@ -744,4 +744,181 @@ function CursorFollower({ enabled }) {
   return <div ref={ref} className="aa-cursor"></div>;
 }
 
-Object.assign(window, { Nav, Hero, ScaleHero, ScrollCue, Marquee, ProjectCard, WorkSection, ManifestoStrip, AboutSection, ContactSection, Footer, ProjectLightbox, CursorFollower });
+// ===== iPod Cover Flow =====
+
+function getCoverStyle(offset, isMobile) {
+  const abs = Math.abs(offset);
+  const dir = Math.sign(offset) || 1;
+  const s = isMobile
+    ? { x1: 170, x2: 280, x3: 370, z0: 60, z1: 0, z2: -60, z3: -110 }
+    : { x1: 240, x2: 395, x3: 500, z0: 100, z1: 0, z2: -80, z3: -140 };
+  if (abs === 0) return { transform: `translate(-50%,-50%) translateZ(${s.z0}px) rotateY(0deg)`, opacity: 1, zIndex: 10 };
+  if (abs === 1) return { transform: `translate(calc(-50% + ${dir * s.x1}px),-50%) translateZ(${s.z1}px) rotateY(${-dir * 58}deg)`, opacity: 0.84, zIndex: 8 };
+  if (abs === 2) return { transform: `translate(calc(-50% + ${dir * s.x2}px),-50%) translateZ(${s.z2}px) rotateY(${-dir * 67}deg)`, opacity: 0.52, zIndex: 5 };
+  if (abs === 3) return { transform: `translate(calc(-50% + ${dir * s.x3}px),-50%) translateZ(${s.z3}px) rotateY(${-dir * 73}deg)`, opacity: 0.22, zIndex: 2 };
+  return { transform: `translate(calc(-50% + ${dir * 680}px),-50%) translateZ(-200px)`, opacity: 0, zIndex: 0, pointerEvents: 'none' };
+}
+
+function ClickWheel({ onNavigate, onSelect }) {
+  const wheelRef = React.useRef();
+  const drag = React.useRef({ active: false, lastAngle: 0, acc: 0 });
+
+  React.useEffect(() => {
+    const wheel = wheelRef.current;
+    const TICK = 28;
+
+    const getAngle = (e) => {
+      const r = wheel.getBoundingClientRect();
+      const pt = e.touches ? e.touches[0] : e;
+      return Math.atan2(pt.clientY - (r.top + r.height / 2), pt.clientX - (r.left + r.width / 2)) * 180 / Math.PI;
+    };
+
+    const onStart = (e) => {
+      if (e.target.closest('.aa-ipod__wheel-center')) return;
+      e.preventDefault();
+      drag.current = { active: true, lastAngle: getAngle(e), acc: 0 };
+    };
+
+    const onMove = (e) => {
+      if (!drag.current.active) return;
+      e.preventDefault();
+      const angle = getAngle(e);
+      let delta = angle - drag.current.lastAngle;
+      if (delta > 180) delta -= 360;
+      if (delta < -180) delta += 360;
+      drag.current.acc += delta;
+      drag.current.lastAngle = angle;
+      while (drag.current.acc >= TICK) { onNavigate(1); drag.current.acc -= TICK; if (navigator.vibrate) navigator.vibrate(1); }
+      while (drag.current.acc <= -TICK) { onNavigate(-1); drag.current.acc += TICK; if (navigator.vibrate) navigator.vibrate(1); }
+    };
+
+    const onEnd = () => { drag.current.active = false; };
+
+    wheel.addEventListener('touchstart', onStart, { passive: false });
+    wheel.addEventListener('touchmove', onMove, { passive: false });
+    wheel.addEventListener('touchend', onEnd);
+    wheel.addEventListener('mousedown', onStart);
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onEnd);
+
+    return () => {
+      wheel.removeEventListener('touchstart', onStart);
+      wheel.removeEventListener('touchmove', onMove);
+      wheel.removeEventListener('touchend', onEnd);
+      wheel.removeEventListener('mousedown', onStart);
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onEnd);
+    };
+  }, [onNavigate]);
+
+  return (
+    <div className="aa-ipod__wheel" ref={wheelRef}>
+      <span className="aa-ipod__wlabel aa-ipod__wlabel--top">MENU</span>
+      <span className="aa-ipod__wlabel aa-ipod__wlabel--left">◁</span>
+      <span className="aa-ipod__wlabel aa-ipod__wlabel--right">▷</span>
+      <span className="aa-ipod__wlabel aa-ipod__wlabel--bottom">▶‖</span>
+      <button className="aa-ipod__wheel-center" onClick={onSelect} title="Open project" />
+    </div>
+  );
+}
+
+function CoverFlowSection({ projects, onOpen }) {
+  const [active, setActive] = React.useState(0);
+  const list = (projects && projects.length > 0) ? projects : PROJECTS_DEFAULT;
+  const n = list.length;
+  const isMobile = React.useMemo(() => typeof window !== 'undefined' && window.innerWidth <= 600, []);
+  const [galleryOpen, setGalleryOpen] = React.useState(false);
+
+  const navigate = React.useCallback((dir) => {
+    setActive(i => ((i + dir) % n + n) % n);
+  }, [n]);
+
+  React.useEffect(() => {
+    const h = (e) => {
+      if (e.key === 'ArrowLeft') navigate(-1);
+      else if (e.key === 'ArrowRight') navigate(1);
+    };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [navigate]);
+
+  const swipe = React.useRef({ x0: null });
+  const onTS = (e) => { swipe.current.x0 = e.touches[0].clientX; };
+  const onTE = (e) => {
+    if (swipe.current.x0 === null) return;
+    const dx = e.changedTouches[0].clientX - swipe.current.x0;
+    if (Math.abs(dx) > 44) navigate(dx < 0 ? 1 : -1);
+    swipe.current.x0 = null;
+  };
+
+  const p = list[active];
+  const tags = p.tags || (p.kind ? p.kind.split(' · ') : []);
+
+  return (
+  <React.Fragment>
+    <section className="aa-ipod" id="work">
+      <div className="aa-ipod__head">
+        <h2 className="aa-ipod__title">Moments <em>worth</em> remembering.</h2>
+        <span className="aa-ipod__count">{active + 1}<span style={{opacity:.35, margin: '0 2px'}}>/</span>{n}</span>
+      </div>
+
+      <div className="aa-ipod__stage" onTouchStart={onTS} onTouchEnd={onTE}>
+        {list.map((proj, i) => {
+          let offset = i - active;
+          if (offset > n / 2) offset -= n;
+          if (offset < -n / 2) offset += n;
+          const img = proj.gallery && proj.gallery[0];
+          const art = proj.art || ART_CYCLE[i % ART_CYCLE.length];
+          return (
+            <div
+              key={i}
+              className="aa-ipod__cover"
+              style={getCoverStyle(offset, isMobile)}
+              onClick={() => offset === 0 ? onOpen(proj) : navigate(Math.sign(offset))}
+            >
+              {img
+                ? <div className="aa-ipod__art" style={{ backgroundImage: `url(${img})` }} />
+                : <div className={`aa-ipod__art aa-pc__art--${art}`} />
+              }
+              {offset === 0 && <div className="aa-ipod__cover-shine" />}
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="aa-ipod__info">
+        <div className="aa-ipod__info-title">{p.title}</div>
+        <div className="aa-ipod__info-meta">{p.client || p.year}</div>
+        <div className="aa-ipod__info-tags">
+          {tags.slice(0, 3).map((t, ti) => <span key={ti} className="aa-ipod__tag">{t}</span>)}
+        </div>
+      </div>
+
+      <ClickWheel onNavigate={navigate} onSelect={() => onOpen(p)} />
+
+      {/* Gallery view toggle */}
+      <div className="aa-ipod__gallery-cta">
+        <button className="aa-ipod__gallery-btn" onClick={() => setGalleryOpen(o => !o)}>
+          {galleryOpen ? '↑ Back to cover flow' : 'Projects in gallery view ↓'}
+        </button>
+      </div>
+    </section>
+
+    {/* Gallery peek — light bg, shows grid partially until expanded */}
+    <div className={`aa-gallery-peek${galleryOpen ? ' aa-gallery-peek--open' : ''}`}>
+      <div className="aa-page">
+        <div className="aa-work">
+          <div className="aa-work__grid">
+            {list.map((p2, i) => (
+              <ProjectCard key={p2.title + i} p={p2} idx={i} onOpen={onOpen} />
+            ))}
+          </div>
+        </div>
+      </div>
+      {!galleryOpen && <div className="aa-gallery-peek__fade" />}
+    </div>
+  </React.Fragment>
+  );
+}
+
+Object.assign(window, { Nav, Hero, ScaleHero, ScrollCue, Marquee, ProjectCard, WorkSection, CoverFlowSection, ManifestoStrip, AboutSection, ContactSection, Footer, ProjectLightbox, CursorFollower });
