@@ -193,6 +193,11 @@ body[data-theme="dark"] .aa-logo:not(.aa-logo--inverse) .aa-logo__creative { col
 @media (max-width: 600px) {
   /* Hero: max size where "in a new light." still fits on one line is 52px */
   .aa-hero--scale .aa-hero__title { font-size: clamp(52px, 13.9vw, 80px); }
+  /* Nav: 2-column (drop meta), tighter spacing */
+  .aa-nav { grid-template-columns: 1fr auto; padding: 14px 20px; }
+  .aa-nav__meta { display: none; }
+  .aa-nav__items { gap: 16px; }
+  .aa-nav__link { font-size: 13px; }
 }
 
 /* hero scroll cue */
