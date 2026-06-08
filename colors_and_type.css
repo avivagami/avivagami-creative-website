@@ -12,10 +12,10 @@
   --aa-stone:        #8A857C;   /* tertiary text, captions */
   --aa-graphite:     #2A2926;   /* never-quite-black support */
   --aa-ink:          #0A0A0A;   /* primary text & line */
-  --aa-signal:       #FF0080;   /* primary accent — neon pink */
-  --aa-signal-press: #d60070;
-  --aa-sun:          #c439bd;   /* secondary accent — electric pop purple */
-  --aa-sun-press:    #a92fa3;
+  --aa-signal:       #fc0fc0;   /* primary accent — hot magenta pink */
+  --aa-signal-press: #cc0c9c;
+  --aa-sun:          #fc0fc0;   /* accent — matched to signal */
+  --aa-sun-press:    #cc0c9c;
   --aa-paper-fallback-rgb: 236, 238, 234;   /* darker signal for active state */
 
   /* ---------- Color: semantic ---------- */
