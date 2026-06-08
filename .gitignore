@@ -1,0 +1,4 @@
+# Claude Code local/dev artifacts
+.claude/worktrees/
+.claude/scheduled_tasks.lock
+.claude/settings.local.json
