@@ -759,9 +759,16 @@ function getCoverStyle(offset, isMobile) {
   return { transform: `translate(calc(-50% + ${dir * 680}px),-50%) translateZ(-200px)`, opacity: 0, zIndex: 0, pointerEvents: 'none' };
 }
 
-function ClickWheel({ onNavigate, onSelect }) {
+function ClickWheel({ onNavigate, onSelect, hintGone, onFirstDrag }) {
   const wheelRef = React.useRef();
   const drag = React.useRef({ active: false, lastAngle: 0, acc: 0 });
+  const dismissed = React.useRef(false);
+
+  const dismissGhost = React.useCallback(() => {
+    if (dismissed.current) return;
+    dismissed.current = true;
+    if (onFirstDrag) onFirstDrag();
+  }, [onFirstDrag]);
 
   React.useEffect(() => {
     const wheel = wheelRef.current;
@@ -776,6 +783,7 @@ function ClickWheel({ onNavigate, onSelect }) {
     const onStart = (e) => {
       if (e.target.closest('.aa-ipod__wheel-center')) return;
       e.preventDefault();
+      dismissGhost();
       drag.current = { active: true, lastAngle: getAngle(e), acc: 0 };
     };
 
@@ -809,7 +817,12 @@ function ClickWheel({ onNavigate, onSelect }) {
       window.removeEventListener('mousemove', onMove);
       window.removeEventListener('mouseup', onEnd);
     };
-  }, [onNavigate]);
+  }, [onNavigate, dismissGhost]);
+
+  // SVG viewBox is 216x216; wheel is 192px, ghost SVG is inset -12px = 216px total
+  // Orbit radius: (216/2) - 12 = 96px from center (108,108)
+  const ORBIT_R = 96;
+  const CX = 108;
 
   return (
     <div className="aa-ipod__wheel" ref={wheelRef}>
@@ -818,6 +831,17 @@ function ClickWheel({ onNavigate, onSelect }) {
       <span className="aa-ipod__wlabel aa-ipod__wlabel--right">▷</span>
       <span className="aa-ipod__wlabel aa-ipod__wlabel--bottom">▶‖</span>
       <button className="aa-ipod__wheel-center" onClick={onSelect} title="Open project" />
+      <svg
+        className={`aa-ipod__ghost${hintGone ? ' is-gone' : ''}`}
+        viewBox="0 0 216 216"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <g className="aa-ipod__ghost-dot-group" style={{transformOrigin: `${CX}px ${CX}px`}}>
+          <circle className="aa-ipod__ghost-glow" cx={CX} cy={CX - ORBIT_R} r="9"/>
+          <circle className="aa-ipod__ghost-core" cx={CX} cy={CX - ORBIT_R} r="5"/>
+        </g>
+      </svg>
     </div>
   );
 }
@@ -828,6 +852,7 @@ function CoverFlowSection({ projects, onOpen }) {
   const n = list.length;
   const isMobile = React.useMemo(() => typeof window !== 'undefined' && window.innerWidth <= 600, []);
   const [galleryOpen, setGalleryOpen] = React.useState(false);
+  const [hintGone, setHintGone] = React.useState(false);
 
   const navigate = React.useCallback((dir) => {
     setActive(i => ((i + dir) % n + n) % n);
@@ -894,7 +919,8 @@ function CoverFlowSection({ projects, onOpen }) {
         </div>
       </div>
 
-      <ClickWheel onNavigate={navigate} onSelect={() => onOpen(p)} />
+      <ClickWheel onNavigate={navigate} onSelect={() => onOpen(p)} hintGone={hintGone} onFirstDrag={() => setHintGone(true)} />
+      <div className={`aa-ipod__spin-hint${hintGone ? ' is-gone' : ''}`}>↻ &nbsp;spin to browse</div>
 
       {/* Gallery view toggle */}
       <div className="aa-ipod__gallery-cta">

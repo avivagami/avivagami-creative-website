@@ -528,14 +528,14 @@ body[data-theme="dark"] .aa-logo:not(.aa-logo--inverse) .aa-logo__creative { col
 .aa-ipod__info-title {
   font-family: var(--font-sans);
   font-weight: 500;
-  font-size: 17px;
+  font-size: 24px;
   letter-spacing: -.01em;
   color: rgba(255,255,255,.92);
 }
 
 .aa-ipod__info-meta {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 14px;
   letter-spacing: .08em;
   text-transform: uppercase;
   color: rgba(255,255,255,.32);
@@ -546,7 +546,7 @@ body[data-theme="dark"] .aa-logo:not(.aa-logo--inverse) .aa-logo__creative { col
 
 .aa-ipod__tag {
   font-family: var(--font-mono);
-  font-size: 9.5px;
+  font-size: 14px;
   letter-spacing: .05em;
   text-transform: uppercase;
   padding: 4px 10px;
@@ -622,6 +622,64 @@ body[data-theme="dark"] .aa-logo:not(.aa-logo--inverse) .aa-logo__creative { col
   .aa-ipod__wlabel--bottom { bottom: 16px; }
   .aa-ipod__wlabel--left { left: 13px; }
   .aa-ipod__wlabel--right { right: 13px; }
+}
+
+/* Ghost finger hint — orbiting dot */
+.aa-ipod__ghost {
+  position: absolute;
+  inset: -12px;
+  width: calc(100% + 24px);
+  height: calc(100% + 24px);
+  pointer-events: none;
+  z-index: 10;
+  overflow: visible;
+  transition: opacity .5s ease;
+}
+.aa-ipod__ghost.is-gone { opacity: 0; pointer-events: none; }
+
+.aa-ipod__ghost-dot-group {
+  animation: aa-ghost-orbit 3s cubic-bezier(.4,0,.35,1) infinite;
+  transform-origin: 50% 50%;
+}
+@keyframes aa-ghost-orbit {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.aa-ipod__ghost-glow {
+  fill: rgba(252,15,192,.28);
+  animation: aa-ghost-glow 3s ease-in-out infinite;
+}
+@keyframes aa-ghost-glow {
+  0%,100% { r: 9;  opacity: .15; }
+  45%,55% { r: 15; opacity: .45; }
+}
+
+.aa-ipod__ghost-core {
+  fill: var(--accent);
+  filter: drop-shadow(0 0 5px var(--accent)) drop-shadow(0 0 12px rgba(252,15,192,.8));
+  animation: aa-ghost-core 3s ease-in-out infinite;
+}
+@keyframes aa-ghost-core {
+  0%,100% { r: 4.5; opacity: .5; }
+  45%,55% { r: 6.5; opacity: 1; }
+}
+
+.aa-ipod__spin-hint {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-align: center;
+  margin-top: 18px;
+  animation: aa-spin-hint 3s ease-in-out infinite;
+  transition: opacity .5s ease;
+}
+.aa-ipod__spin-hint.is-gone { opacity: 0; pointer-events: none; }
+@keyframes aa-spin-hint {
+  0%,100% { opacity: .3; }
+  50%      { opacity: .9; }
 }
 /* Gallery toggle CTA */
 .aa-ipod__gallery-cta {
