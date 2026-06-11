@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Aviv Agami — CV</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<style>
+  /* ---- Aviv Agami Creative — tokens (paper theme) ---- */
+  @import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&family=Caveat:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --aa-paper: #ECEEEA;
+    --aa-bone: #DEE1DC;
+    --aa-stone: #8A857C;
+    --aa-graphite: #2A2926;
+    --aa-ink: #0A0A0A;
+    --aa-signal: #fc0fc0;
+    --aa-signal-press: #cc0c9c;
+
+    --fg-1: var(--aa-ink);
+    --fg-2: var(--aa-graphite);
+    --fg-3: var(--aa-stone);
+    --border-strong: var(--aa-ink);
+    --border-soft: rgba(10, 10, 10, 0.18);
+    --accent: var(--aa-signal);
+    --accent-press: var(--aa-signal-press);
+
+    --font-sans: 'Inter Tight', 'Helvetica Neue', Arial, sans-serif;
+    --font-script: 'Caveat', cursive;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+  }
+
+  html, body { margin: 0; padding: 0; }
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--aa-bone);
+    font-family: var(--font-sans);
+    color: var(--fg-1);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .cv-mat {
+    min-height: 100vh;
+    padding: 56px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .cv-sheet {
+    width: 920px;
+    max-width: 100%;
+    background: var(--aa-paper);
+    border: 1px solid var(--border-soft);
+    box-shadow: 0 24px 60px -28px rgba(10,10,10,0.28);
+    padding: 76px 72px 60px;
+  }
+
+  /* ---- Download bars ---- */
+  .cv-download-bar {
+    width: 920px;
+    max-width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .cv-download-bar.top { margin-bottom: 16px; }
+  .cv-download-bar.bottom { margin-top: 16px; }
+  .cv-back-link {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--fg-3); text-decoration: none;
+    transition: color 120ms;
+  }
+  .cv-back-link:hover { color: var(--accent); }
+  .cv-dl-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--fg-1);
+    background: var(--aa-paper); border: 1px solid var(--border-strong);
+    padding: 11px 20px; cursor: pointer; text-decoration: none;
+    transition: background 120ms, color 120ms, border-color 120ms;
+  }
+  .cv-dl-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .cv-dl-btn .arrow { font-size: 13px; transition: transform 120ms; }
+  .cv-dl-btn:hover .arrow { transform: translateY(2px); }
+
+  /* ---- Shared text styles ---- */
+  .mono-label {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-3);
+  }
+  .section-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 1px solid var(--border-strong); padding-bottom: 14px;
+  }
+  .section-head h2 {
+    font-family: var(--font-sans); font-weight: 500; font-size: 32px;
+    letter-spacing: -0.02em; line-height: 1; margin: 0; white-space: nowrap;
+  }
+  .script-accent {
+    font-family: var(--font-script); font-style: normal; font-weight: 600;
+    color: var(--accent); font-size: 1.18em; line-height: 1; display: inline-block;
+  }
+
+  /* ---- Tag (design system: Tag variant="outline") ---- */
+  .aa-tag {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.06em;
+    text-transform: uppercase; padding: 6px 14px; border-radius: 0;
+    white-space: nowrap; display: inline-block; line-height: 1.1;
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  }
+  .tag-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  /* ---- Experience ---- */
+  .role {
+    display: grid; grid-template-columns: 150px 1fr; gap: 36px;
+    padding: 32px 0; border-bottom: 1px solid var(--border-soft);
+  }
+  .role:last-of-type { border-bottom: none; }
+  .role-rail {
+    font-family: var(--font-mono); font-size: 12px; color: var(--fg-3);
+    letter-spacing: 0.02em; line-height: 1.7;
+  }
+  .role-rail .dates { color: var(--fg-1); }
+  .role-rail .org { margin-top: 8px; }
+  .role h3 {
+    font-family: var(--font-sans); font-weight: 500; font-size: 22px;
+    letter-spacing: -0.015em; margin: 0;
+  }
+  .role .role-sub { font-size: 15px; line-height: 1.5; color: var(--fg-2); margin: 8px 0 18px; }
+  .role ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+  .role li {
+    display: grid; grid-template-columns: 14px 1fr; gap: 12px;
+    font-size: 14.5px; line-height: 1.55; color: var(--fg-1);
+  }
+  .role li .arrow { color: var(--accent); font-family: var(--font-mono); }
+  .role li strong { font-weight: 600; }
+  .role li .detail { color: var(--fg-2); }
+  .role .tag-row { margin-top: 18px; }
+
+  /* ---- Capabilities ---- */
+  .cap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 36px 48px; }
+  .cap-grid h3 {
+    font-family: var(--font-sans); font-weight: 500; font-size: 18px;
+    letter-spacing: -0.01em; line-height: 1.25; margin: 0 0 10px;
+  }
+  .cap-grid h3 .num {
+    font-family: var(--font-mono); font-size: 12px; color: var(--accent);
+    letter-spacing: 0.04em; margin-right: 10px;
+  }
+  .cap-grid p { font-size: 14.5px; line-height: 1.55; color: var(--fg-2); margin: 0; }
+
+  /* ---- Education + Skills ---- */
+  .edu-skills { margin-top: 56px; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
+  .edu-skills .section-head { margin-bottom: 24px; }
+  .edu-skills .section-head h2 { font-size: 24px; }
+  .edu-skills h3 {
+    font-family: var(--font-sans); font-weight: 500; font-size: 17px;
+    letter-spacing: -0.01em; margin: 0;
+  }
+  .edu-skills .edu-meta { font-family: var(--font-mono); font-size: 12px; color: var(--fg-3); margin: 6px 0 12px; }
+  .edu-skills p { font-size: 14.5px; line-height: 1.55; color: var(--fg-2); margin: 0; }
+  .edu-skills .mono-label { margin-bottom: 12px; }
+
+  /* ---- Logo lockup (design system: Logo size=26) ---- */
+  .aa-logo {
+    display: inline-flex; align-items: center; gap: 11px;
+    font-family: var(--font-sans); font-weight: 500; font-size: 26px;
+    letter-spacing: -0.025em; line-height: 1; color: var(--fg-1); white-space: nowrap;
+  }
+  .aa-logo .sep { width: 1px; height: 24px; background: currentColor; opacity: 0.4; flex: none; }
+  .aa-logo .script {
+    font-family: var(--font-script); font-style: italic; font-weight: 600;
+    font-size: 40px; color: var(--aa-stone); line-height: 1; transform: translateY(-1.5px);
+  }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 720px) {
+    .cv-mat { padding: 32px 14px; }
+    .cv-sheet { padding: 40px 24px 36px; }
+    .masthead-name { font-size: 13vw !important; }
+    .masthead-top-row { flex-direction: column; align-items: flex-start !important; gap: 20px !important; }
+    .masthead-contact { text-align: left !important; }
+    .masthead-contact .avail { justify-content: flex-start !important; }
+    .cap-grid, .edu-skills { grid-template-columns: 1fr; }
+    .role { grid-template-columns: 1fr; gap: 12px; }
+    footer { flex-direction: column; align-items: flex-start !important; }
+    footer .tagline { text-align: left !important; }
+  }
+
+  /* ---- Print / PDF ---- */
+  @media print {
+    @page { size: A4; margin: 0; }
+    body { background: var(--aa-paper) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .cv-mat { padding: 0 !important; background: var(--aa-paper) !important; }
+    .cv-sheet { box-shadow: none !important; border: none !important; }
+    .cv-download-bar { display: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cv-mat">
+
+  <!-- TOP DOWNLOAD BAR -->
+  <div class="cv-download-bar top">
+    <a href="https://avivagami.com" target="_blank" rel="noopener" class="cv-back-link">&larr; avivagami.com</a>
+    <button class="cv-dl-btn" onclick="window.print()">
+      <span>Download CV</span>
+      <span class="arrow">&darr;</span>
+    </button>
+  </div>
+
+  <div class="cv-sheet">
+
+    <!-- ============ MASTHEAD ============ -->
+    <header>
+      <div class="mono-label" style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--border-strong); padding-bottom: 14px;">
+        <span>&middot; CURRICULUM VITAE</span>
+        <span>TEL AVIV, IL &middot; SUMMER '26</span>
+      </div>
+
+      <div class="masthead-top-row" style="display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; margin-top: 36px;">
+        <h1 class="masthead-name" style="font-family: var(--font-sans); font-weight: 500; font-size: 80px; line-height: 0.92; letter-spacing: -0.04em; margin: 0; white-space: nowrap;">Aviv Agami</h1>
+        <div class="masthead-contact" style="text-align: right; font-family: var(--font-mono); font-size: 12px; line-height: 1.9; color: var(--fg-2); flex: none; padding-bottom: 4px;">
+          <div class="avail" style="display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-bottom: 6px;">
+            <span style="width: 8px; height: 8px; border-radius: 999px; background: var(--accent); display: inline-block;"></span>
+            <span class="mono-label">AVAILABLE &middot; SUMMER '26</span>
+          </div>
+          <div>+972 52 824 1125</div>
+          <div>avivagami@gmail.com</div>
+          <div><a href="https://avivagami.com" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none; letter-spacing: 0.02em;">avivagami.com</a></div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+        <span style="font-family: var(--font-sans); font-weight: 500; font-size: 27px; letter-spacing: -0.02em;">Creative Director &amp; Event Professional</span>
+        <span class="mono-label">Live Events &amp; Conferences &middot; Stage &middot; Gen-AI Production</span>
+      </div>
+
+      <p style="font-family: var(--font-sans); font-weight: 400; font-size: 19px; line-height: 1.5; letter-spacing: -0.01em; color: var(--fg-2); max-width: 64ch; margin: 36px 0 0;">
+        Creative Director and event professional with a decade of experience leading high-impact creative productions for top-tier global brands, including <span style="color: var(--fg-1); font-weight: 500;">Autodesk, TikTok, and Microsoft</span>. A hands-on leader who bridges artistic vision, business impact, and execution, using generative AI to accelerate production and unlock new storytelling possibilities at scale.
+      </p>
+    </header>
+
+    <!-- ============ WHAT I BRING ============ -->
+    <section style="margin-top: 64px;">
+      <div class="section-head" style="margin-bottom: 36px;">
+        <h2>What I <span class="script-accent">bring</span></h2>
+        <span class="mono-label">&middot; CAPABILITIES</span>
+      </div>
+
+      <div class="cap-grid">
+        <div>
+          <h3><span class="num">01</span>Global Event Strategy</h3>
+          <p>Proven success translating C-level objectives into massive, in-person experiences designed to drive brand awareness, customer engagement, and business impact.</p>
+        </div>
+        <div>
+          <h3><span class="num">02</span>Operational Excellence</h3>
+          <p>Demonstrated track record managing complex cross-functional global productions &mdash; steering multiple parallel workstreams, external agencies, vendors, and clients.</p>
+        </div>
+        <div>
+          <h3><span class="num">03</span>AI-Integrated Workflows</h3>
+          <p>Practical application of GenAI (video, visual, code assistants) to accelerate concepting, storyboarding, interactive experiences, and visualizations.</p>
+        </div>
+        <div>
+          <h3><span class="num">04</span>Strategy &amp; Tech Translation</h3>
+          <p>Proven ability to translate complex R&amp;D and tech concepts (Microsoft AI, Cyber, Health Tech) into accessible, engaging narratives for diverse audiences.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ EXPERIENCE ============ -->
+    <section style="margin-top: 64px;">
+      <div class="section-head" style="margin-bottom: 4px;">
+        <h2>Selected <span class="script-accent">experience</span></h2>
+        <span class="mono-label">&middot; '17 TO '26</span>
+      </div>
+
+      <!-- Role 1 -->
+      <article class="role">
+        <div class="role-rail">
+          <div class="dates">2020 &mdash; Present</div>
+          <div class="org">Freelance</div>
+        </div>
+        <div>
+          <h3>Creative Director &amp; Experiential Consultant</h3>
+          <p class="role-sub">Strategic partner for global brands, focusing on high-energy activations and creative innovation.</p>
+          <ul>
+            <li><span class="arrow">&rarr;</span><span><strong>TikTok IL &mdash;</strong> <span class="detail">Led creative strategy for flagship client events for 3+ years. Designed fast-paced, visual experiences that mirror the platform's digital energy in physical space.</span></span></li>
+            <li><span class="arrow">&rarr;</span><span><strong>Microsoft IL (AI Tour) &mdash;</strong> <span class="detail">Developed the creative narrative for Microsoft's AI industry stage, with content creation built on AI workflows.</span></span></li>
+            <li><span class="arrow">&rarr;</span><span><strong>AI Implementation &mdash;</strong> <span class="detail">Use generative AI to create HD mockups and "vibe" reels for client pitches &mdash; shortening approval cycles and improving concept clarity across global teams.</span></span></li>
+          </ul>
+          <div class="tag-row">
+            <span class="aa-tag">Creative Direction</span>
+            <span class="aa-tag">Live Activations</span>
+            <span class="aa-tag">GenAI Production</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Role 2 -->
+      <article class="role">
+        <div class="role-rail">
+          <div class="dates">Jul 2021 &mdash; Jan 2026</div>
+          <div class="org">Gorilla Productions</div>
+        </div>
+        <div>
+          <h3>Creative Director</h3>
+          <p class="role-sub">Gorilla Productions LTD</p>
+          <ul>
+            <li><span class="arrow">&rarr;</span><span><strong>Creative Leadership &mdash;</strong> <span class="detail">Managed the full lifecycle of creative projects, from initial script and visual concept through to final production.</span></span></li>
+            <li><span class="arrow">&rarr;</span><span><strong>Tech &amp; Gaming Focus &mdash;</strong> <span class="detail">Crafted narratives for Gaming (Superplay) and Cyber / Tech sectors, requiring deep understanding of user engagement and technical accuracy.</span></span></li>
+          </ul>
+          <div class="tag-row">
+            <span class="aa-tag">Script &amp; Concept</span>
+            <span class="aa-tag">Gaming</span>
+            <span class="aa-tag">Cyber / Tech</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Role 3 -->
+      <article class="role">
+        <div class="role-rail">
+          <div class="dates">May 2017 &mdash; 2021</div>
+          <div class="org">FaZa Productions</div>
+        </div>
+        <div>
+          <h3>Creative Director</h3>
+          <p class="role-sub">FaZa Productions LTD</p>
+          <ul>
+            <li><span class="arrow">&rarr;</span><span><strong>Physical-Digital Productions &mdash;</strong> <span class="detail">Managed large-scale productions requiring tight synchronization of digital content with physical environments.</span></span></li>
+            <li><span class="arrow">&rarr;</span><span><strong>Technical Design &mdash;</strong> <span class="detail">Applied product design principles to solve logistical and creative challenges in real-time production environments.</span></span></li>
+          </ul>
+          <div class="tag-row">
+            <span class="aa-tag">Phygital</span>
+            <span class="aa-tag">Technical Design</span>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ============ EDUCATION + SKILLS ============ -->
+    <section class="edu-skills">
+      <div>
+        <div class="section-head">
+          <h2>Education</h2>
+        </div>
+        <h3>Diploma, Product Design</h3>
+        <div class="edu-meta">H.I.T &mdash; Holon Institute of Technology &middot; 2014&ndash;2017</div>
+        <p>Focused on the creative process and 3D fabrication. Final project exhibited at <span style="color: var(--fg-1); font-weight: 500;">Milan Design Week 2019</span>.</p>
+      </div>
+      <div>
+        <div class="section-head">
+          <h2>Skills &amp; Tools</h2>
+        </div>
+        <div class="mono-label">AI VIDEO - IMAGES - CODE</div>
+        <div class="tag-row" style="margin-bottom: 22px;">
+          <span class="aa-tag">Flow</span>
+          <span class="aa-tag">Kling</span>
+          <span class="aa-tag">Sora</span>
+          <span class="aa-tag">Midjourney</span>
+          <span class="aa-tag">veed.io</span>
+          <span class="aa-tag">claude</span>
+        </div>
+        <div class="mono-label">Graphic Tools</div>
+        <div class="tag-row">
+          <span class="aa-tag">Illustrator</span>
+          <span class="aa-tag">Photoshop</span>
+          <span class="aa-tag">PowerPoint</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FOOTER ============ -->
+    <footer style="margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border-strong); display: flex; justify-content: space-between; align-items: center; gap: 24px;">
+      <span class="aa-logo">
+        <span>Aviv Agami</span>
+        <span class="sep"></span>
+        <span class="script">creative</span>
+      </span>
+      <div class="tagline" style="font-family: var(--font-sans); font-size: 19px; letter-spacing: -0.01em; color: var(--fg-2); text-align: right;">Your message, in a <span style="font-family: var(--font-script); font-style: normal; font-weight: 600; font-size: 1.5em; color: var(--accent);">new light</span></div>
+    </footer>
+
+  </div>
+
+  <!-- BOTTOM DOWNLOAD BAR -->
+  <div class="cv-download-bar bottom">
+    <a href="https://avivagami.com" target="_blank" rel="noopener" class="cv-back-link">&larr; avivagami.com</a>
+    <button class="cv-dl-btn" onclick="window.print()">
+      <span>Download CV</span>
+      <span class="arrow">&darr;</span>
+    </button>
+  </div>
+
+</div>
+
+</body>
+</html>
