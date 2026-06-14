@@ -308,7 +308,7 @@
     var raw = coverOf(p);
     if (!raw) return '';
     var rootPath = raw.replace(/^\.\./, '');
-    return '/.netlify/images?url=' + encodeURIComponent(rootPath) + '&w=500&fit=cover';
+    return '/.netlify/images?url=' + encodeURIComponent(rootPath) + '&w=500';
   }
 
   function renderCues() {
