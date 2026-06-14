@@ -198,12 +198,22 @@
     @page { size: A4; margin: 0; }
     body { background: var(--aa-paper) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .cv-mat { padding: 0 !important; background: var(--aa-paper) !important; }
-    .cv-sheet { box-shadow: none !important; border: none !important; }
+    .cv-sheet { box-shadow: none !important; border: none !important; padding: 48px 72px 40px !important; }
     .cv-download-bar { display: none !important; }
 
-    /* Page break: new page before Experience, and after it (before Education) */
+    /* Page break: new page before Experience and before Education */
     .cv-break-before { break-before: page; page-break-before: always; }
-    .cv-break-after  { break-after:  page; page-break-after:  always; }
+
+    /* Keep each role article together — no mid-article splits */
+    .role { break-inside: avoid; page-break-inside: avoid; }
+
+    /* Tighter print spacing so all 3 roles fit on one A4 page */
+    .cv-break-before { margin-top: 0 !important; }
+    .cv-break-before .section-head { margin-bottom: 0 !important; }
+    .role { padding: 16px 0 !important; }
+    .role .role-sub { margin: 4px 0 10px !important; }
+    .role ul { gap: 6px !important; }
+    .role .tag-row { margin-top: 10px !important; }
   }
 </style>
 </head>
