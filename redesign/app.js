@@ -301,6 +301,16 @@
     return '';
   }
 
+  // Returns a Netlify-resized URL for the ~380px peek thumbnail.
+  // coverOf() returns '../images/projects/foo.jpg' (the '..' is added at boot);
+  // Netlify Image CDN needs the root-relative path as the url param.
+  function peekSrc(p) {
+    var raw = coverOf(p);
+    if (!raw) return '';
+    var rootPath = raw.replace(/^\.\./, '');
+    return '/.netlify/images?url=' + encodeURIComponent(rootPath) + '&w=500&fit=cover';
+  }
+
   function renderCues() {
     var ul = $('#cueList');
     ul.innerHTML = projects.map(function (p, i) {
@@ -338,7 +348,7 @@
       $$('.cue', ul).forEach(function (li) {
         li.addEventListener('mouseenter', function () {
           var p = projects[+li.dataset.i];
-          var src = coverOf(p);
+          var src = peekSrc(p);
           if (!src) return;
           peekImg.src = src;
           peekTag.textContent = p.kind || p.client || '';
@@ -616,6 +626,11 @@
       renderAbout(res[1] || {});
       renderSettings(res[2] || {});
       revealInView();
+      // preload all cover images (resized) once the browser goes idle
+      var whenIdle = window.requestIdleCallback || function (fn) { setTimeout(fn, 1500); };
+      whenIdle(function () {
+        projects.forEach(function (p) { var s = peekSrc(p); if (s) new Image().src = s; });
+      });
     }).catch(function (err) {
       console.error('content load failed', err);
       $('#cueList').innerHTML = '<li class="cue"><div class="cue__inner"><span class="cue__no mono">ERR</span><h3 class="cue__title">Content failed to load</h3></div></li>';
