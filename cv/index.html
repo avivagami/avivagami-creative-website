@@ -200,6 +200,10 @@
     .cv-mat { padding: 0 !important; background: var(--aa-paper) !important; }
     .cv-sheet { box-shadow: none !important; border: none !important; }
     .cv-download-bar { display: none !important; }
+
+    /* Page break: new page before Experience, and after it (before Education) */
+    .cv-break-before { break-before: page; page-break-before: always; }
+    .cv-break-after  { break-after:  page; page-break-after:  always; }
   }
 </style>
 </head>
@@ -276,7 +280,7 @@
     </section>
 
     <!-- ============ EXPERIENCE ============ -->
-    <section style="margin-top: 64px;">
+    <section class="cv-break-before" style="margin-top: 64px;">
       <div class="section-head" style="margin-bottom: 4px;">
         <h2>Selected <span class="script-accent">experience</span></h2>
         <span class="mono-label">&middot; '17 TO '26</span>
@@ -347,7 +351,7 @@
     </section>
 
     <!-- ============ EDUCATION + SKILLS ============ -->
-    <section class="edu-skills">
+    <section class="edu-skills cv-break-before">
       <div>
         <div class="section-head">
           <h2>Education</h2>
