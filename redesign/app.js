@@ -223,8 +223,13 @@
       cueNo.textContent = 'CUE ' + pad2(cur + 1) + ' / ' + pad2(PRINCIPLES.length);
       cueKw.textContent = PRINCIPLES[cur].kw;
       cues.forEach(function (c, i) { c.classList.toggle('on', i === cur); });
+      // keep the active cue centred within the horizontal stack ONLY —
+      // scrollIntoView would also scroll the page (it jumped to this section on load)
       var active = cues[cur];
-      if (active && active.scrollIntoView) active.scrollIntoView({ inline: 'nearest', block: 'nearest' });
+      if (active) {
+        var target = active.offsetLeft - (stack.clientWidth - active.clientWidth) / 2;
+        stack.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
+      }
     }
 
     // animate the crossfade fader 0 → 100 → 0
