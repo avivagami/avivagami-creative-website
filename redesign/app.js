@@ -188,11 +188,11 @@
   /* ---------- creative principles — "Cue to Cue" lighting desk ---------- */
 
   var PRINCIPLES = [
-    { kw: 'REMEMBERED',  html: 'Built to be <em>remembered</em>, not just seen. Every layout, every shot, every sentence — earning its place in the room.' },
-    { kw: 'DISCIPLINE',  html: '<em>Discipline</em> over decoration. In a world of endless digital static, the goal is to cut right through it — every detail serving a clear, strategic purpose.' },
-    { kw: 'HUMANS',      html: 'Tech accelerates. <em>Humans</em> connect. Generative tools move at the speed of tech — they don’t replace the human touch. They are the engine, not the driver.' },
-    { kw: 'EXPERIENCES', html: '<em>Experiences</em>, not just spectacles. A 10-meter running track or a fast-paced film — the physical and the digital fuse into one immersive narrative.' },
-    { kw: 'SAFE',        html: '<em>Safe</em> is invisible. True engagement takes a willingness to challenge the expected — bold choices, unexpected leaps, a healthy dose of curated chaos.' },
+    { kw: 'REMEMBERED',  html: 'Built to be <em>remembered</em>, not just seen. Every element earns its place.' },
+    { kw: 'DISCIPLINE',  html: '<em>Discipline</em> over decoration. Cut through the static. Every detail serves a purpose.' },
+    { kw: 'HUMANS',      html: 'Tech accelerates. <em>Humans</em> connect. Generative tools are the engine, not the driver.' },
+    { kw: 'EXPERIENCES', html: '<em>Experiences</em>, not just spectacles. Physical and digital, fused into one narrative.' },
+    { kw: 'SAFE',        html: '<em>Safe</em> is invisible. True engagement takes bold choices, unexpected leaps, curated chaos.' },
   ];
 
   function pad3(n) { n = Math.round(n); return (n < 10 ? '00' : n < 100 ? '0' : '') + n; }
@@ -307,6 +307,7 @@
   function peekSrc(p) {
     var raw = coverOf(p);
     if (!raw) return '';
+    if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return raw;
     var rootPath = raw.replace(/^\.\./, '');
     return '/.netlify/images?url=' + encodeURIComponent(rootPath) + '&w=500';
   }
@@ -430,9 +431,9 @@
     $('#showCue').textContent = 'CUE ' + pad2(i + 1) + ' / ' + pad2(projects.length);
     $('#showKind').textContent = (p.kind || '').toUpperCase();
     $('#showTitle').innerHTML = richify(p.title);
-    $('#showClient').textContent = 'CLIENT — ' + (p.client || '');
-    $('#showYear').textContent = 'YEAR — ' + (p.year || '');
-    $('#showRole').textContent = 'ROLE — ' + (p.role || '');
+    $('#showClient').textContent = 'CLIENT - ' + (p.client || '');
+    $('#showYear').textContent = 'YEAR - ' + (p.year || '');
+    $('#showRole').textContent = 'ROLE - ' + (p.role || '');
     $('#showBrief').innerHTML = richify(p.brief);
     $('#showExp').innerHTML = richify(p.experience || p.desc);
     $('#showTeam').textContent = p.team || '';
