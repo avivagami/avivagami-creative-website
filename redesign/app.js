@@ -158,29 +158,18 @@
 
   function initScroll() {
     var bar = $('#progressBar');
-    var tc = $('#tcReadout');
     addEventListener('scroll', function () {
       var max = document.documentElement.scrollHeight - innerHeight;
       var p = max > 0 ? scrollY / max : 0;
       bar.style.width = (p * 100) + '%';
-      // scroll position as SMPTE-ish timecode: full page = 90 "seconds" of show
-      var totalFrames = Math.floor(p * 90 * 24);
-      var f = totalFrames % 24;
-      var s = Math.floor(totalFrames / 24) % 60;
-      var m = Math.floor(totalFrames / (24 * 60));
-      tc.textContent = '00:' + pad2(m) + ':' + pad2(s) + ':' + pad2(f);
     }, { passive: true });
   }
 
   /* ---------- clocks ---------- */
 
   function initClocks() {
-    var navT = $('#tlvTime'), footT = $('#footTime');
-    function tick() {
-      var t = tlvClock();
-      if (navT) navT.textContent = t;
-      if (footT) footT.textContent = t;
-    }
+    var navT = $('#tlvTime');
+    function tick() { if (navT) navT.textContent = tlvClock(); }
     tick();
     setInterval(tick, 1000);
   }

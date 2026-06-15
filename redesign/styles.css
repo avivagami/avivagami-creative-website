@@ -123,15 +123,6 @@ em { font-family: var(--serif-i); font-style: italic; font-weight: 400; }
    TIMECODE + PROGRESS
    ========================================================= */
 
-.timecode {
-  position: fixed;
-  right: var(--pad);
-  bottom: 18px;
-  z-index: 80;
-  display: flex; gap: 8px; align-items: center;
-  color: var(--bone-dim);
-}
-.timecode__rec { color: var(--signal); animation: blink 1.2s steps(2) infinite; font-size: 9px; }
 @keyframes blink { 50% { opacity: 0; } }
 .blink { animation: blink 1.2s steps(2) infinite; }
 
