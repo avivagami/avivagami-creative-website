@@ -3,106 +3,252 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Aviv Agami Creative</title>
+  <title>Aviv Agami - The Architecture of Attention</title>
   <meta name="description" content="Creative direction, interactive live events, AI video creation for global players.">
-  <meta property="og:title" content="Aviv Agami Creative">
-  <meta property="og:description" content="Creative direction, interactive live events, AI video creation for global players.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://avivagami.com">
-  <meta property="og:image" content="https://avivagami.com/images/og-image.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="960">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://avivagami.com/images/og-image.png">
-  <link rel="canonical" href="https://avivagami.com">
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital@0;1&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
-<body data-accent="sun" data-theme="dark">
-  <div id="root"></div>
+<body>
 
-  <!-- Netlify Forms detection — must match the React form's field names exactly -->
-  <form name="contact" data-netlify="true" hidden>
-    <input name="name" />
-    <input name="email" type="email" />
-    <input name="company" />
-    <select name="type"></select>
-    <textarea name="message"></textarea>
-  </form>
+  <!-- ============ PRELOADER : HOUSE OPENS ============ -->
+  <div class="loader" id="loader" aria-hidden="true">
+    <div class="loader__inner">
+      <div class="loader__row mono">
+        <span>AA·SHOW·26</span>
+        <span id="loaderPct">00</span>
+      </div>
+      <div class="loader__word">
+        <span class="loader__standby mono blink">● STANDBY</span>
+        <h1 class="loader__title">BUILDING<br><em>ANTICIPATION</em></h1>
+      </div>
+      <div class="loader__row mono">
+        <span>TEL AVIV - YAFFO</span>
+        <span>CUE 00</span>
+      </div>
+    </div>
+    <div class="loader__curtain"></div>
+  </div>
 
-  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+  <!-- grain + spotlight -->
+  <div class="grain" aria-hidden="true"></div>
+  <div class="spot" id="spot" aria-hidden="true"></div>
 
-  <script type="text/babel" src="components.jsx"></script>
+  <!-- custom cursor -->
+  <div class="cursor" id="cursor" aria-hidden="true">
+    <span class="cursor__label mono" id="cursorLabel"></span>
+  </div>
 
-  <script type="text/babel">
-    async function loadContent() {
-      try {
-        const [pRes, aRes, sRes] = await Promise.all([
-          fetch('content/projects.json'),
-          fetch('content/about.json'),
-          fetch('content/settings.json'),
-        ]);
-        const [p, a, s] = await Promise.all([pRes.json(), aRes.json(), sRes.json()]);
-        return { projects: p.items || [], about: a, settings: s };
-      } catch (e) {
-        return null;
-      }
-    }
+  <div class="progress" aria-hidden="true"><div class="progress__bar" id="progressBar"></div></div>
 
-    function App({ projects, about, settings }) {
-      const [openProject, setOpenProject] = React.useState(null);
+  <!-- ============ NAV ============ -->
+  <header class="nav">
+    <a class="nav__brand" href="#top" data-cursor="HOME">
+      <span class="nav__mark">AA</span>
+      <span class="nav__sub mono">CREATIVE DIRECTOR - TLV</span>
+    </a>
+    <nav class="nav__links mono">
+      <a href="#work" data-cursor="ACT I"><span class="nav__act">ACT I - </span>WORK</a>
+      <a href="#about" data-cursor="ACT II"><span class="nav__act">ACT II - </span>ABOUT</a>
+      <a href="#contact" data-cursor="ACT III"><span class="nav__act">ACT III - </span>CONTACT</a>
+    </nav>
+    <div class="nav__time mono"><span id="tlvTime">00:00:00</span> TLV</div>
+  </header>
 
-      React.useEffect(() => {
-        const obs = new IntersectionObserver((entries) => {
-          entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add('is-in'); });
-        }, { rootMargin: '0px 0px -10% 0px' });
-        document.querySelectorAll('[data-reveal], .aa-reveal').forEach((el) => obs.observe(el));
-        return () => obs.disconnect();
-      }, []);
+  <main id="top">
 
-      return (
-        <React.Fragment>
-          <CursorFollower enabled={true} />
-          <Nav settings={settings} about={about} />
-          <main>
-            <Hero variant="scale" />
-            <Marquee variant="" projects={projects} />
-            <CoverFlowSection projects={projects} onOpen={setOpenProject} />
-            <div className="aa-page">
-              <ManifestoStrip />
-              <AboutSection about={about} />
-            </div>
-            <ContactSection settings={settings} />
-          </main>
-          <Footer settings={settings} projects={projects} />
-          <ProjectLightbox p={openProject} onClose={() => setOpenProject(null)} />
-        </React.Fragment>
-      );
-    }
+    <!-- ============ HERO ============ -->
+    <section class="hero" id="hero">
+      <div class="hero__meta mono">
+        <span>RUN OF SHOW - PORTFOLIO '26</span>
+        <span class="hero__avail" id="heroAvail">AVAILABLE · SPRING '26</span>
+      </div>
 
-    loadContent().then((data) => {
-      ReactDOM.createRoot(document.getElementById('root')).render(
-        <App
-          projects={data ? data.projects : null}
-          about={data ? data.about : null}
-          settings={data ? data.settings : null}
-        />
-      );
-    });
+      <h1 class="hero__title" aria-label="Aviv Agami">
+        <span class="hero__line"><span class="hero__word" data-reveal>AVIV</span></span>
+        <span class="hero__line hero__line--offset">
+          <span class="hero__word hero__word--outline" data-reveal>AGAMI</span>
+          <span class="hero__role mono" data-reveal>YOUR<br>MESSAGE<br>IN A,<br>NEW<br>LIGHT</span>
+        </span>
+      </h1>
 
-    // Redirect back to admin after Netlify Identity login
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on('init', (user) => {
-        if (!user) {
-          window.netlifyIdentity.on('login', () => {
-            document.location.href = '/admin/';
-          });
-        }
-      });
-    }
-  </script>
+      <p class="hero__lede" data-reveal>
+        I design the <em>architecture</em> of attention,<br>
+        live events, conferences &amp; AI-driven content for global&nbsp;players.
+      </p>
+
+      <div class="hero__foot mono">
+        <span class="hero__scrollcue">SCROLL FOR ACT I <span class="hero__arrow">↓</span></span>
+        <span>31.768°N - 35.213°E</span>
+      </div>
+    </section>
+
+    <!-- client marquee -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track" id="marqueeTrack">
+        <img src="/images/logos/tiktok.svg"    alt="TikTok"    class="mq-logo" style="height:43px"><i>✦</i>
+        <img src="/images/logos/microsoft.png" alt="Microsoft" class="mq-logo" style="height:21px"><i>✦</i>
+        <img src="/images/logos/lusha.png"     alt="Lusha"     class="mq-logo"><i>✦</i>
+        <img src="/images/logos/melio.svg"     alt="Melio"     class="mq-logo"><i>✦</i>
+        <img src="/images/logos/variety.svg"   alt="Variety"   class="mq-logo"><i>✦</i>
+        <img src="/images/logos/autodesk.png"  alt="Autodesk"  class="mq-logo mq-logo--color"><i>✦</i>
+        <img src="/images/logos/gorilla.svg"   alt="Gorilla"   class="mq-logo" style="height:15px"><i>✦</i>
+        <!-- duplicate set so the scroll loop is seamless -->
+        <img src="/images/logos/tiktok.svg"    alt="" class="mq-logo" style="height:43px" aria-hidden="true"><i>✦</i>
+        <img src="/images/logos/microsoft.png" alt="" class="mq-logo" style="height:21px" aria-hidden="true"><i>✦</i>
+        <img src="/images/logos/lusha.png"     alt="" class="mq-logo" aria-hidden="true"><i>✦</i>
+        <img src="/images/logos/melio.svg"     alt="" class="mq-logo" aria-hidden="true"><i>✦</i>
+        <img src="/images/logos/variety.svg"   alt="" class="mq-logo" aria-hidden="true"><i>✦</i>
+        <img src="/images/logos/autodesk.png"  alt="" class="mq-logo mq-logo--color" aria-hidden="true"><i>✦</i>
+        <img src="/images/logos/gorilla.svg"   alt="" class="mq-logo" style="height:15px" aria-hidden="true"><i>✦</i>
+      </div>
+    </div>
+
+    <!-- ============ ACT I — WORK ============ -->
+    <section class="act" id="work">
+      <div class="act__head">
+        <span class="act__no mono" data-reveal>ACT I / CUE SHEET</span>
+        <h2 class="act__title" data-reveal>THE <em>WORK</em></h2>
+        <p class="act__note mono" data-reveal>HOVER TO PREVIEW - CLICK FOR FULL SHOW FILE</p>
+      </div>
+
+      <ul class="cues" id="cueList"><!-- rendered from /content/projects.json --></ul>
+
+      <!-- floating hover preview -->
+      <div class="peek" id="peek" aria-hidden="true">
+        <img id="peekImg" alt="">
+        <span class="peek__tag mono" id="peekTag"></span>
+      </div>
+    </section>
+
+    <!-- ============ CREATIVE PRINCIPLES — LX cue stack ============ -->
+    <section class="desk" id="principles">
+      <div class="stage" id="stageEl">
+        <div class="pool" id="pool"></div>
+        <div class="stage__inner">
+          <div class="cue-meta mono" data-reveal>
+            <span class="cue-meta__label">STAGE NOTES · CREATIVE PRINCIPLES <span class="cue-meta__sep">·</span></span>
+            <span id="cueNo">CUE 01 / 05</span><span class="cue-meta__sep">·</span>
+            <span id="cueKw">REMEMBERED</span>
+          </div>
+          <p class="principle" id="principle" data-reveal></p>
+        </div>
+      </div>
+
+      <div class="console">
+        <ol class="stack" id="stack" aria-label="Cue stack"></ol>
+        <div class="fader" aria-hidden="true">
+          <div class="fader__label mono"><span>XFADE</span><span id="faderPct">000</span></div>
+          <div class="fader__track"><div class="fader__fill" id="faderFill"></div></div>
+        </div>
+        <div class="console__keys">
+          <button class="go" id="go" data-cursor="GO" aria-label="Take next cue"><b>GO</b><small>SPACE</small></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ACT II — ABOUT ============ -->
+    <section class="act about" id="about">
+      <div class="act__head">
+        <span class="act__no mono" data-reveal>ACT II / DIRECTOR'S NOTES</span>
+        <h2 class="act__title" data-reveal>THE <em>DIRECTOR</em></h2>
+      </div>
+
+      <div class="about__grid">
+        <figure class="about__portrait" data-reveal>
+          <img id="portraitImg" src="/images/projects/aa-photo.jpg" alt="Aviv Agami portrait">
+        </figure>
+        <div class="about__bio" id="aboutBio" data-reveal><!-- rendered from /content/about.json --></div>
+      </div>
+
+      <!-- capabilities as run-of-show -->
+      <div class="ros">
+        <div class="ros__head mono" data-reveal><span>RUNNING ORDER - CAPABILITIES</span><span>DUR.</span></div>
+        <ol class="ros__list" id="rosList"></ol>
+      </div>
+    </section>
+
+    <!-- ============ ACT III — CONTACT ============ -->
+    <section class="act contact" id="contact">
+      <span class="act__no mono" data-reveal>ACT III / CURTAIN CALL</span>
+      <h2 class="contact__title" data-reveal>
+        LET'S MAKE<br>SOMETHING<br>WORTH <em>REMEMBERING</em>
+      </h2>
+      <div class="contact__actions" data-reveal>
+        <a class="btn-mag" id="emailBtn" href="mailto:avivagami@gmail.com" data-cursor="SEND">
+          <span class="btn-mag__fill"></span>
+          <span class="btn-mag__label">avivagami@gmail.com</span>
+        </a>
+        <div class="contact__links mono">
+          <a id="linkLinkedin" href="#" target="_blank" rel="noreferrer" data-cursor="OPEN">LINKEDIN ↗</a>
+          <a id="linkWhatsapp" href="https://wa.me/972528241125" target="_blank" rel="noreferrer" data-cursor="CHAT">WHATSAPP ↗</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="footer__applause mono" id="applause" data-cursor="CLAP">
+      <span id="applauseCount">👏 0</span> - APPLAUSE WELCOME
+    </div>
+    <div class="footer__row mono">
+      <span>© 2026 AVIV AGAMI - TEL AVIV</span>
+      <a href="#top" data-cursor="TOP">BACK TO TOP ↑</a>
+    </div>
+  </footer>
+
+  <!-- ============ PROJECT OVERLAY ============ -->
+  <div class="show" id="show" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="show__bar">
+      <span class="mono" id="showCue">CUE 01</span>
+      <span class="mono" id="showKind"></span>
+      <button class="show__close mono" id="showClose" data-cursor="CLOSE">CLOSE ✕</button>
+    </div>
+    <div class="show__body">
+      <header class="show__head">
+        <h3 class="show__title" id="showTitle"></h3>
+        <div class="show__facts mono">
+          <span id="showClient"></span>
+          <span id="showYear"></span>
+          <span id="showRole"></span>
+        </div>
+      </header>
+      <div class="show__gallery" id="showGallery">
+        <div class="show__strip" id="showStrip"><!-- gallery --></div>
+        <div class="show__edge show__edge--l" aria-hidden="true"></div>
+        <div class="show__edge show__edge--r" aria-hidden="true"></div>
+        <button class="show__arrow show__arrow--l" id="galArrowPrev" data-cursor="PREV" aria-label="Previous image">‹</button>
+        <button class="show__arrow show__arrow--r" id="galArrowNext" data-cursor="NEXT" aria-label="Next image">›</button>
+        <span class="show__galcount js-galcount mono" aria-hidden="true"></span>
+      </div>
+      <div class="show__gallerynav">
+        <button class="mono" id="galPrev" aria-label="Previous image">‹ PREV</button>
+        <span class="mono js-galcount" id="galCount" aria-hidden="true"></span>
+        <button class="mono" id="galNext" aria-label="Next image">NEXT ›</button>
+      </div>
+      <div class="show__cols">
+        <div class="show__col">
+          <h4 class="mono">THE BRIEF</h4>
+          <p id="showBrief"></p>
+        </div>
+        <div class="show__col">
+          <h4 class="mono">THE SHOW</h4>
+          <p id="showExp"></p>
+          <p class="show__team mono" id="showTeam"></p>
+        </div>
+      </div>
+      <div class="show__nav">
+        <button class="mono" id="showPrev" data-cursor="PREV">← PREV CUE</button>
+        <button class="mono" id="showNext" data-cursor="NEXT">NEXT CUE →</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>

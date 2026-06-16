@@ -291,14 +291,13 @@
   }
 
   // Returns a Netlify-resized URL for the ~380px peek thumbnail.
-  // coverOf() returns '../images/projects/foo.jpg' (the '..' is added at boot);
-  // Netlify Image CDN needs the root-relative path as the url param.
+  // coverOf() returns a root-absolute path like '/images/projects/foo.jpg'.
+  // Netlify Image CDN needs that root-relative path as the url param.
   function peekSrc(p) {
     var raw = coverOf(p);
     if (!raw) return '';
     if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return raw;
-    var rootPath = raw.replace(/^\.\./, '');
-    return '/.netlify/images?url=' + encodeURIComponent(rootPath) + '&w=500';
+    return '/.netlify/images?url=' + encodeURIComponent(raw) + '&w=500';
   }
 
   function renderCues() {
@@ -529,7 +528,7 @@
     var bio = $('#aboutBio');
     var parts = [a.lede, a.bio1, a.bio2, a.bio3, a.bio4].filter(Boolean);
     bio.innerHTML = parts.map(function (t) { return '<p>' + richify(t).replace(/\n/g, '<br>') + '</p>'; }).join('');
-    if (a.portrait) $('#portraitImg').src = (a.portrait.charAt(0) === '/' ? '..' : '') + a.portrait;
+    if (a.portrait) $('#portraitImg').src = a.portrait;
     if (a.availability) $('#heroAvail').textContent = a.availability.toUpperCase();
   }
 
@@ -608,15 +607,11 @@
     renderRos();
 
     Promise.all([
-      fetch('../content/projects.json').then(function (r) { return r.json(); }),
-      fetch('../content/about.json').then(function (r) { return r.json(); }),
-      fetch('../content/settings.json').then(function (r) { return r.json(); }),
+      fetch('/content/projects.json').then(function (r) { return r.json(); }),
+      fetch('/content/about.json').then(function (r) { return r.json(); }),
+      fetch('/content/settings.json').then(function (r) { return r.json(); }),
     ]).then(function (res) {
-      projects = (res[0].items || []).map(function (p) {
-        if (p.gallery) p.gallery = p.gallery.map(function (g) { return g.charAt(0) === '/' ? '..' + g : g; });
-        if (p.image && p.image.charAt(0) === '/') p.image = '..' + p.image;
-        return p;
-      });
+      projects = res[0].items || [];
       renderCues();
       renderAbout(res[1] || {});
       renderSettings(res[2] || {});

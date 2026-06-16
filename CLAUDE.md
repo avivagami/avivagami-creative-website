@@ -26,17 +26,31 @@ This means:
 
 ## Tech stack
 
-- **No build step** — plain HTML, CSS, React loaded via CDN (unpkg)
-- `index.html` — app shell, loads React, Babel, and `components.jsx`
-- `components.jsx` — all React components in one file
-- `styles.css` + `colors_and_type.css` — all styling
+The home page is the **"Run of Show"** design: plain HTML/CSS/vanilla JS, **no build step**.
+
+- `index.html` — the page markup (themed as a live theatrical/broadcast show)
+- `app.js` — all behavior, a vanilla-JS IIFE (loader, cursor/spotlight, work cue
+  list + hover preview, project overlay, creative-principles lighting desk, etc.)
+- `styles.css` — all styling
 - `content/` — JSON files that drive the page content (edited via CMS)
   - `about.json` — portrait, bio paragraphs, availability
-  - `projects.json` — array of project cards
+  - `projects.json` — array of projects (incl. a `type` label shown above each title)
   - `settings.json` — email, phone, social links
 - `images/projects/` — all uploaded images including portrait
+- `images/logos/` — client marquee logos
 - `admin/config.yml` — Decap CMS configuration
 - `netlify.toml` — publish dir is `.` (the repo root)
+
+**Asset paths are root-absolute** (`/content/...`, `/images/...`, `/favicon.svg`) so
+they resolve from the root document. Netlify's Image CDN (`/.netlify/images?...`)
+serves resized hover previews in production; on localhost `app.js` falls back to the
+raw image path.
+
+> **History note:** the site was originally a React-via-CDN app (`components.jsx` +
+> `colors_and_type.css`). In June 2026 the "Run of Show" redesign (previously at
+> `/redesign/`) was promoted to the home page and the old React site was moved to
+> `archive/` (kept for reference, not linked). Don't resurrect the React site unless
+> explicitly asked.
 
 ---
 
@@ -71,7 +85,7 @@ These must point at the real served files at the repo root. If a prefix is ever 
 
 - File: `images/projects/aa-photo.jpg`
 - Referenced in `content/about.json` as `"portrait": "/images/projects/aa-photo.jpg"`
-- The component fallback in `components.jsx` (`ABOUT_DEFAULT`) still points to the old `images/portrait.png` — only matters if `about.json` fails to load
+- Rendered by `app.js` (`renderAbout`) into `#portraitImg`; if `about.json` fails to load the markup's default `src` in `index.html` is used
 
 ---
 
@@ -79,7 +93,7 @@ These must point at the real served files at the repo root. If a prefix is ever 
 
 **Content only (bio, projects, settings):** Use the CMS at /admin/ — no code needed.
 
-**Code changes:** Edit `components.jsx` or `styles.css` / `colors_and_type.css` directly. There is no build step — changes go live on next deploy.
+**Code changes:** Edit `index.html`, `app.js`, or `styles.css` directly. There is no build step — changes go live on next deploy.
 
 **Images:** Upload via CMS media library, or commit directly to `images/projects/`.
 
@@ -87,9 +101,11 @@ These must point at the real served files at the repo root. If a prefix is ever 
 
 ---
 
-## Netlify Forms
+## Contact
 
-Contact form is wired to Netlify Forms. The hidden detection form in `index.html` must match the field names in the React `ContactSection` component exactly (`name`, `email`, `company`, `type`, `message`).
+The contact section uses a `mailto:` button plus direct **LinkedIn** and **WhatsApp**
+links (no web form). The old Netlify Forms contact form lived in the archived React
+site and is no longer used.
 
 ---
 
@@ -97,4 +113,4 @@ Contact form is wired to Netlify Forms. The hidden detection form in `index.html
 
 - `images/portrait.png` was a project card screenshot, not a photo — replaced by `images/projects/aa-photo.jpg`
 - Site used to live in a `website aviv agami creative/` subfolder; CMS path drift and Netlify's subfolder base-directory smart-deploy caused silently skipped/canceled deploys — fixed by moving the whole site to the repo root and clearing the Netlify base directory
-- `images/portrait.png` legacy fallback in `ABOUT_DEFAULT` (`components.jsx`) — only used if `about.json` fails to load
+- The React home page (`components.jsx` + `colors_and_type.css`) was replaced by the "Run of Show" vanilla-JS design in June 2026; the old files now live in `archive/`

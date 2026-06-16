@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Aviv Agami Creative</title>
+  <meta name="description" content="Creative direction, interactive live events, AI video creation for global players.">
+  <meta property="og:title" content="Aviv Agami Creative">
+  <meta property="og:description" content="Creative direction, interactive live events, AI video creation for global players.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://avivagami.com">
+  <meta property="og:image" content="https://avivagami.com/images/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="960">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://avivagami.com/images/og-image.png">
+  <link rel="canonical" href="https://avivagami.com">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+</head>
+<body data-accent="sun" data-theme="dark">
+  <div id="root"></div>
+
+  <!-- Netlify Forms detection — must match the React form's field names exactly -->
+  <form name="contact" data-netlify="true" hidden>
+    <input name="name" />
+    <input name="email" type="email" />
+    <input name="company" />
+    <select name="type"></select>
+    <textarea name="message"></textarea>
+  </form>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+
+  <script type="text/babel" src="components.jsx"></script>
+
+  <script type="text/babel">
+    async function loadContent() {
+      try {
+        const [pRes, aRes, sRes] = await Promise.all([
+          fetch('content/projects.json'),
+          fetch('content/about.json'),
+          fetch('content/settings.json'),
+        ]);
+        const [p, a, s] = await Promise.all([pRes.json(), aRes.json(), sRes.json()]);
+        return { projects: p.items || [], about: a, settings: s };
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function App({ projects, about, settings }) {
+      const [openProject, setOpenProject] = React.useState(null);
+
+      React.useEffect(() => {
+        const obs = new IntersectionObserver((entries) => {
+          entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add('is-in'); });
+        }, { rootMargin: '0px 0px -10% 0px' });
+        document.querySelectorAll('[data-reveal], .aa-reveal').forEach((el) => obs.observe(el));
+        return () => obs.disconnect();
+      }, []);
+
+      return (
+        <React.Fragment>
+          <CursorFollower enabled={true} />
+          <Nav settings={settings} about={about} />
+          <main>
+            <Hero variant="scale" />
+            <Marquee variant="" projects={projects} />
+            <CoverFlowSection projects={projects} onOpen={setOpenProject} />
+            <div className="aa-page">
+              <ManifestoStrip />
+              <AboutSection about={about} />
+            </div>
+            <ContactSection settings={settings} />
+          </main>
+          <Footer settings={settings} projects={projects} />
+          <ProjectLightbox p={openProject} onClose={() => setOpenProject(null)} />
+        </React.Fragment>
+      );
+    }
+
+    loadContent().then((data) => {
+      ReactDOM.createRoot(document.getElementById('root')).render(
+        <App
+          projects={data ? data.projects : null}
+          about={data ? data.about : null}
+          settings={data ? data.settings : null}
+        />
+      );
+    });
+
+    // Redirect back to admin after Netlify Identity login
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on('init', (user) => {
+        if (!user) {
+          window.netlifyIdentity.on('login', () => {
+            document.location.href = '/admin/';
+          });
+        }
+      });
+    }
+  </script>
+</body>
+</html>
