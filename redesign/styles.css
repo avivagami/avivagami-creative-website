@@ -255,8 +255,16 @@ em { font-family: var(--serif-i); font-style: italic; font-weight: 400; }
 }
 .hero__role {
   color: var(--signal);
-  line-height: 1.5;
-  padding-bottom: clamp(8px, 1.5vw, 24px);
+  /* sized in em of the title so the 5-line block tracks the cap-height
+     of the "I" in AGAMI at every viewport width */
+  font-size: 0.075em;
+  line-height: 1.78;
+  padding-bottom: 0;
+  /* nudge up so LIGHT's baseline meets the bottom of the "I". Uses top
+     (not transform) because the reveal animation owns transform here.
+     em is relative to the role font, which itself scales with the title. */
+  position: relative;
+  top: -0.65em;
   white-space: nowrap;
 }
 
@@ -301,6 +309,16 @@ em { font-family: var(--serif-i); font-style: italic; font-weight: 400; }
     padding-top: 28px;
     margin-top: 0;
   }
+}
+
+/* wide screens: pull the name + lede toward the middle, but keep the
+   top/bottom framing rails (meta + foot) full-bleed to the edges.
+   Uses padding-left (not max-width) so the title stays full-width and the
+   stacked role tagline beside AGAMI is never clipped by .hero__line's
+   overflow:hidden. */
+@media (min-width: 1500px) {
+  .hero__title { padding-left: calc((100% - 1372px) / 2); }
+  .hero__lede { margin-right: calc((100% - 1372px) / 2); }
 }
 
 /* reveal animation */
@@ -425,6 +443,13 @@ em { font-family: var(--serif-i); font-style: italic; font-weight: 400; }
 .cue__no { color: var(--bone-faint); transition: color 0.3s; align-self: center; }
 .cue:hover .cue__no { color: var(--signal); }
 .cue__body { display: flex; flex-direction: column; gap: 10px; }
+.cue__type {
+  font-size: 12.65px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--signal);
+}
 .cue__tags { display: flex; flex-wrap: wrap; gap: 6px; }
 .cue__tag {
   font-size: 10px;

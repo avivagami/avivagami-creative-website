@@ -21,6 +21,7 @@
       ],
       "kind": "event concept · stage direction · content management",
       "role": "Creative Director",
+      "type": "client event",
       "title": "TikTok ForYou Summit '23",
       "tags": [
         "Concept Development",
@@ -56,6 +57,7 @@
       ],
       "kind": "event concept · stage direction · content management",
       "role": "Creative Director",
+      "type": "client conference",
       "title": "TikTok Discover '23",
       "tags": [
         "Event Concept Development",
@@ -92,6 +94,7 @@
       ],
       "kind": "event concept · stage direction · content management",
       "role": "Creative Director",
+      "type": "employee experience event",
       "title": "Lusha — Lama Kacha",
       "tags": [
         "Event Concept Development",
@@ -120,6 +123,7 @@
       ],
       "kind": "concept creation · interactive activities · content management",
       "role": "Creative Director",
+      "type": "conference booth",
       "title": "Melio — Recruitment Booth @ React Next",
       "tags": [
         "Concept Creation",
@@ -157,6 +161,7 @@
       ],
       "kind": "event concept · stage direction · content management",
       "role": "Creative Director",
+      "type": "client conference",
       "title": "TikTok ForYou Summit '25",
       "tags": [
         "Event Concept Development",
@@ -185,6 +190,7 @@
       ],
       "kind": "stage direction · art direction · content concept development",
       "role": "Creative Director",
+      "type": "fundraiser",
       "title": "Variety Israel — All-In '25",
       "tags": [
         "Stage Direction",
@@ -213,6 +219,7 @@
       ],
       "kind": "event concept · stage direction · art direction",
       "role": "Creative Director",
+      "type": "employee experience event",
       "title": "Cybereason — Glitter Purim",
       "tags": [
         "Event Concept Development",
@@ -242,6 +249,7 @@
       ],
       "kind": "design concept · visual messaging · art direction",
       "role": "Creative Director",
+      "type": "conference booth",
       "title": "HLTH Amsterdam — Israeli Healthcare Ecosystem Village",
       "tags": [
         "Design Concept Development",
@@ -268,6 +276,7 @@
       ],
       "kind": "event concept · stage direction · content management",
       "role": "Creative Director",
+      "type": "employee experience event",
       "title": "Lusha — Top of the Spitz",
       "tags": [
         "Event Concept Development",

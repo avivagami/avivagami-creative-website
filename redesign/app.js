@@ -312,6 +312,7 @@
           '<div class="cue__inner">' +
             '<span class="cue__no mono">CUE ' + pad2(i + 1) + '</span>' +
             '<div class="cue__body">' +
+              (p.type ? '<span class="cue__type mono">' + richify(p.type) + '</span>' : '') +
               '<h3 class="cue__title">' + richify(p.title) + '</h3>' +
               (tagHtml ? '<div class="cue__tags">' + tagHtml + '</div>' : '') +
             '</div>' +
@@ -329,8 +330,13 @@
       (function loop() {
         px += (ptx - px) * 0.12;
         py += (pty - py) * 0.12;
+        // sit the preview directly ABOVE the pointer: centred horizontally,
+        // bottom edge a gap above the cursor so it never covers the row text
+        var gap = 24;
+        var x = px - peek.offsetWidth / 2;
+        var y = py - peek.offsetHeight - gap;
         peek.style.transform = (peek.classList.contains('is-on') ? '' : 'scale(0.85) rotate(-3deg) ') +
-          'translate(' + (px + 30) + 'px,' + (py - peek.offsetHeight / 2) + 'px)';
+          'translate(' + x + 'px,' + y + 'px)';
         peek.style.left = '0'; peek.style.top = '0';
         requestAnimationFrame(loop);
       })();
@@ -551,7 +557,6 @@
       $('.btn-mag__label').textContent = s.email;
     }
     if (s.linkedin && s.linkedin !== '#') $('#linkLinkedin').href = s.linkedin;
-    if (s.instagram && s.instagram !== '#') $('#linkInstagram').href = s.instagram;
   }
 
   function initApplause() {
