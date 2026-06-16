@@ -23,6 +23,18 @@ collections:
             fields:
               - { name: title,  label: Title,       widget: string }
               - { name: client, label: Client,       widget: string }
+              - name: type
+                label: Project type
+                widget: select
+                required: false
+                default: client event
+                hint: "Small label shown above the project title on the home page."
+                options:
+                  - client event
+                  - client conference
+                  - employee experience event
+                  - conference booth
+                  - fundraiser
               - name: year
                 label: Year
                 widget: select
@@ -33,7 +45,7 @@ collections:
                   - { label: "'23", value: "'23" }
                   - { label: "'22", value: "'22" }
                 default: "'26"
-              - { name: kind,   label: Type,         widget: string, hint: "e.g. creative direction · script · stage" }
+              - { name: kind,   label: Disciplines,  widget: string, hint: "Shown in the project overlay header. e.g. event concept · stage direction · content management" }
               - { name: role,   label: Role,         widget: string }
               - { name: team,   label: Team size,    widget: string }
               - name: span
