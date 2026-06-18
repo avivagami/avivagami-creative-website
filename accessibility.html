@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>הצהרת נגישות · Accessibility · Aviv Agami</title>
+  <meta name="description" content="הצהרת נגישות לאתר אביב אגמי · Accessibility statement for the Aviv Agami site.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono&family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --stage: #0B0A0C;
+      --bone: #F4F1EA;
+      --bone-dim: rgba(244, 241, 234, 0.66);
+      --signal: #FC0FC0;
+      --hair: 1px solid rgba(244, 241, 234, 0.14);
+      --mono: 'Fragment Mono', ui-monospace, monospace;
+      --sans: 'Satoshi', system-ui, sans-serif;
+      --display: 'Clash Display', sans-serif;
+      --hebrew: 'Heebo', system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--stage);
+      color: var(--bone);
+      font-family: var(--sans);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      padding: clamp(28px, 6vw, 80px) clamp(20px, 6vw, 80px) 120px;
+    }
+    .wrap { max-width: 760px; margin-inline: auto; }
+
+    .back {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--bone-dim);
+      text-decoration: none;
+      margin-bottom: clamp(36px, 7vw, 72px);
+      transition: color 0.2s;
+    }
+    .back:hover, .back:focus-visible { color: var(--signal); }
+
+    .doc + .doc { margin-top: clamp(48px, 9vw, 96px); padding-top: clamp(48px, 9vw, 96px); border-top: var(--hair); }
+
+    .kicker {
+      font-size: 12px;
+      color: var(--signal);
+      margin: 0 0 14px;
+    }
+    .doc--en .kicker { font-family: var(--mono); letter-spacing: 0.16em; text-transform: uppercase; }
+    .doc--he .kicker { font-family: var(--hebrew); font-weight: 500; letter-spacing: normal; }
+
+    h1 { margin: 0 0 28px; line-height: 1.05; letter-spacing: -0.02em; font-weight: 700; font-size: clamp(34px, 7vw, 62px); }
+    .doc--en h1 { font-family: var(--display); text-transform: uppercase; }
+    .doc--he h1 { font-family: var(--hebrew); letter-spacing: normal; }
+
+    h2 {
+      font-size: 13px;
+      margin: 36px 0 12px;
+      color: var(--bone);
+    }
+    .doc--en h2 { font-family: var(--mono); letter-spacing: 0.14em; text-transform: uppercase; }
+    .doc--he h2 { font-family: var(--hebrew); font-weight: 700; font-size: 19px; letter-spacing: normal; }
+
+    p { margin: 0 0 14px; color: var(--bone-dim); }
+    .lead { color: var(--bone); font-size: clamp(17px, 2vw, 20px); }
+
+    ul { margin: 0 0 14px; padding-inline-start: 1.2em; color: var(--bone-dim); }
+    li { margin-bottom: 7px; }
+
+    a { color: var(--signal); }
+    a:focus-visible, .back:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; border-radius: 2px; }
+
+    .ltr { unicode-bidi: isolate; direction: ltr; }
+
+    .updated {
+      margin-top: 28px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(244, 241, 234, 0.5);
+    }
+    .doc--he .updated { font-family: var(--hebrew); letter-spacing: normal; text-transform: none; font-size: 13px; }
+
+    .doc--he { font-family: var(--hebrew); }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      * { transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="/" dir="ltr">← AVIVAGAMI.COM</a>
+
+    <!-- ============ HEBREW (RTL) ============ -->
+    <section class="doc doc--he" dir="rtl" lang="he">
+      <p class="kicker">נגישות</p>
+      <h1>הצהרת נגישות</h1>
+
+      <p class="lead">אביב אגמי מחויב להנגשת האתר לכלל הגולשים, לרבות אנשים עם מוגבלות. אנו רואים חשיבות רבה במתן חוויית גלישה שוויונית ופועלים באופן שוטף לשיפור נגישות האתר.</p>
+
+      <h2>התקן</h2>
+      <p>אתר זה נבנה בהתאם להנחיות הנגישות <span class="ltr">WCAG 2.0</span> ברמה <span class="ltr">AA</span>, התואמות את התקן הישראלי ת״י 5568.</p>
+
+      <h2>מה הונגש באתר</h2>
+      <ul>
+        <li>ניווט וגלישה באמצעות מקלדת, עם סימון מיקוד (פוקוס) ברור.</li>
+        <li>ניגודיות צבעים בין הטקסט לרקע בהתאם לדרישות התקן.</li>
+        <li>טקסט חלופי לתמונות ולוגואים משמעותיים.</li>
+        <li>כיבוד העדפת המשתמש לצמצום אנימציות (<span class="ltr">prefers-reduced-motion</span>).</li>
+        <li>מבנה סמנטי ותגיות כותרת תקינות לתמיכה בקוראי מסך.</li>
+      </ul>
+
+      <h2>מגבלות ידועות</h2>
+      <p>ייתכן שחלקים מסוימים באתר — בעיקר גלריות התמונות והאפקטים האינטראקטיביים — אינם נגישים במלואם בכל הטכנולוגיות המסייעות. אנו ממשיכים לפעול לשיפור הנגישות באופן מתמשך.</p>
+
+      <h2>יצירת קשר בנושאי נגישות</h2>
+      <p>נתקלתם בבעיית נגישות, או שיש לכם הצעה לשיפור? נשמח לשמוע ולתקן.</p>
+      <p>אחראי נגישות: אביב אגמי<br>
+      דוא״ל: <a class="ltr" href="mailto:avivagami@gmail.com">avivagami@gmail.com</a></p>
+
+      <p class="updated">עודכן: יוני 2026</p>
+    </section>
+
+    <!-- ============ ENGLISH (LTR) ============ -->
+    <section class="doc doc--en" dir="ltr" lang="en">
+      <p class="kicker">Accessibility</p>
+      <h1>Accessibility statement</h1>
+
+      <p class="lead">Aviv Agami is committed to making this site usable by everyone, including people with disabilities. We believe in an equal browsing experience and work continuously to improve the site's accessibility.</p>
+
+      <h2>Standard</h2>
+      <p>This site is built to follow the <span>WCAG 2.0</span> accessibility guidelines at level <span>AA</span>, which correspond to Israeli Standard IS 5568.</p>
+
+      <h2>What we've done</h2>
+      <ul>
+        <li>Keyboard navigation with a clearly visible focus indicator.</li>
+        <li>Text-to-background colour contrast that meets the standard.</li>
+        <li>Alternative text for meaningful images and logos.</li>
+        <li>Respecting the user's reduced-motion preference (<span>prefers-reduced-motion</span>).</li>
+        <li>Semantic structure and proper headings to support screen readers.</li>
+      </ul>
+
+      <h2>Known limitations</h2>
+      <p>Some parts of the site — mainly the image galleries and interactive effects — may not be fully accessible with every assistive technology. We are continuing to improve accessibility over time.</p>
+
+      <h2>Accessibility contact</h2>
+      <p>Found an accessibility problem, or have a suggestion? We'd be glad to hear and fix it.</p>
+      <p>Accessibility contact: Aviv Agami<br>
+      Email: <a href="mailto:avivagami@gmail.com">avivagami@gmail.com</a></p>
+
+      <p class="updated">Updated: June 2026</p>
+    </section>
+  </div>
+</body>
+</html>

@@ -8,7 +8,7 @@
   --stage-2:    #131115;   /* raised surface */
   --bone:       #F4F1EA;   /* warm house-light white */
   --bone-dim:   rgba(244, 241, 234, 0.55);
-  --bone-faint: rgba(244, 241, 234, 0.22);
+  --bone-faint: rgba(244, 241, 234, 0.5);  /* WCAG AA: ~4.9:1 on stage black */
   --signal:     #FC0FC0;   /* the one light */
   --signal-dim: rgba(252, 15, 192, 0.14);
   --hair:       1px solid rgba(244, 241, 234, 0.14);
@@ -1093,4 +1093,12 @@ em { font-family: var(--serif-i); font-style: italic; font-weight: 400; }
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
   html { scroll-behavior: auto; }
   [data-reveal] { opacity: 1; transform: none; }
+}
+
+/* WCAG: visible keyboard-focus indicator. :focus-visible only shows for
+   keyboard/AT users, so mouse clicks stay ring-free and on-brand. */
+:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+  border-radius: 2px;
 }
