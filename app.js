@@ -10,7 +10,7 @@
   var CAPS = [
     { num: 'CUE 01', name: 'Creative direction', yrs: '10 YRS', desc: 'Concept-to-stage for live events and digital experiences. The kind of direction where the script, the visual, and the physical space are a single, unified vibe.' },
     { num: 'CUE 02', name: 'Copy & script', yrs: '10 YRS', desc: 'Manifestos, modular video scripts, taglines, and pitch decks. Words engineered to capture attention, and sentences that actually survive the legal review.' },
-    { num: 'CUE 03', name: 'Video & visual content', yrs: '09 YRS', desc: 'Campaign videos, social content, recap videos, and graphic design. From high-velocity videos to the static graphics that pop.' },
+    { num: 'CUE 03', name: 'Video & visual content', yrs: '09 YRS', desc: 'Campaign videos, social content, recap videos and graphic design. From high-velocity videos to the static graphics that pop.' },
     { num: 'CUE 04', name: 'Experiential & live events', yrs: '08 YRS', desc: 'Keynotes, interactive brand takeovers, and phygital activations. Stage, script, and visual design orchestrated as one immersive experience.' },
     { num: 'CUE 05', name: 'Generative AI creations', yrs: '04 YRS', desc: 'Custom production workflows blending advanced generative tools with directed art. The tech scales, but the human stays in control.' },
   ];
