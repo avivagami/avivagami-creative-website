@@ -434,6 +434,7 @@
 
     var strip = $('#showStrip');
     var parts = [];
+    if (p.video) parts.push('<video class="show__video" src="' + p.video + '" controls preload="metadata" playsinline' + (p.poster ? ' poster="' + p.poster + '"' : '') + '></video>');
     var vid = ytId(p.youtube);
     if (vid) parts.push('<iframe class="show__video" src="https://www.youtube.com/embed/' + vid + '" title="' + (p.title || 'video') + '" allowfullscreen loading="lazy"></iframe>');
     (p.gallery || []).forEach(function (src) {
@@ -462,7 +463,7 @@
 
   function galleryStep() {
     var strip = $('#showStrip');
-    var first = strip.querySelector('img, iframe');
+    var first = strip.querySelector('img, iframe, video');
     var w = first ? first.getBoundingClientRect().width : 0;
     // image may not be laid out / loaded yet — fall back to ~one viewport
     if (w < 40) return strip.clientWidth * 0.9;

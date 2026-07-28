@@ -996,6 +996,12 @@ em { font-family: var(--serif-i); font-style: italic; font-weight: 400; }
   scroll-snap-align: start;
 }
 
+/* native <video> may be any aspect (e.g. 5:4) — letterbox inside the frame */
+video.show__video {
+  object-fit: contain;
+  background: #000;
+}
+
 /* desktop gallery — edge arrows + fade scrims over the strip */
 .show__gallery { position: relative; }
 .show__edge {
