@@ -977,6 +977,10 @@ em { font-family: var(--serif-i); font-style: italic; font-weight: 400; }
   scroll-snap-type: x mandatory;
   cursor: grab;
 }
+/* auto margins center a strip that fits (e.g. a single video) but collapse
+   to 0 once content overflows, so long galleries still scroll from the left */
+.show__strip > :first-child { margin-left: auto; }
+.show__strip > :last-child { margin-right: auto; }
 .show__strip::-webkit-scrollbar { height: 6px; }
 .show__strip::-webkit-scrollbar-thumb { background: var(--signal); }
 .show__strip img {
@@ -1044,6 +1048,9 @@ video.show__video {
 /* mobile uses the pill row instead of edge arrows */
 @media (max-width: 820px) {
   .show__edge, .show__arrow, .show__galcount { display: none; }
+  /* fit media to the screen width instead of overflowing sideways */
+  .show__video { width: 100%; height: auto; }
+  video.show__video { aspect-ratio: auto; min-height: 240px; max-height: 60vh; }
 }
 
 /* gallery prev/next — shown on touch / small screens where drag isn't obvious */
