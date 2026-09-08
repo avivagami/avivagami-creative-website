@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>חלוקת ארוחות - Aviv Agami</title>
+<meta name="description" content="מחשבון חלוקת עלויות לארוחות משותפות בין משפחות. מי חייב למי וכמה.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+  :root{
+    --bg:#f6f4ef; --card:#fff; --ink:#1c1b18; --muted:#6b6860; --line:#e3dfd5;
+    --accent:#1f6f5f; --accent-ink:#fff; --danger:#b3382c; --ok:#1f6f5f; --warn:#a8641b;
+    --r:14px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,"Segoe UI",Arial,sans-serif}
+  header{padding:18px 20px 8px;max-width:760px;margin:0 auto}
+  h1{margin:0;font-size:22px}
+  main{max-width:760px;margin:0 auto;padding:0 16px 80px;display:grid;gap:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+  .card h2{margin:0 0 10px;font-size:17px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  input,select,button{font:inherit;border-radius:10px;border:1px solid var(--line);padding:10px 12px;min-height:44px;background:#fff;color:var(--ink)}
+  input[type=number]{width:96px}
+  input.name{flex:1;min-width:120px}
+  select{flex:1;min-width:120px}
+  button{cursor:pointer;background:#fff}
+  button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+  button.ghost{border:none;background:transparent;color:var(--muted);padding:6px 8px;min-height:auto}
+  button.danger{color:var(--danger)}
+  .muted{color:var(--muted);font-size:14px}
+  table{width:100%;border-collapse:collapse;font-size:15px}
+  th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:right;vertical-align:middle}
+  th{font-weight:600;color:var(--muted);font-size:13px}
+  td.num,th.num{text-align:left;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .pos{color:var(--ok);font-weight:600}
+  .neg{color:var(--danger);font-weight:600}
+  .transfer{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:#fbfaf7}
+  .transfer .amt{margin-inline-start:auto;font-weight:700;font-size:18px;font-variant-numeric:tabular-nums}
+  .total{font-size:26px;font-weight:700}
+  .events{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;min-height:auto}
+  .chip.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .empty{color:var(--muted);padding:8px 0}
+  label.inline{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted)}
+  .stack{display:grid;gap:8px}
+  @media (max-width:480px){ input[type=number]{width:80px} }
+</style>
+</head>
+<body>
+<header>
+  <a href="/" style="color:var(--muted);font-size:14px;text-decoration:none">← avivagami.com</a>
+  <h1>חלוקת ארוחות משותפות</h1>
+  <div class="muted">הכל נשמר בדפדפן הזה. אין שרת.</div>
+</header>
+<main>
+
+  <section class="card">
+    <h2>אירועים
+      <button class="ghost" id="newEvent">+ אירוע חדש</button>
+    </h2>
+    <div class="events" id="events"></div>
+    <div class="row" style="margin-top:10px">
+      <input class="name" id="eventName" placeholder="שם האירוע">
+      <label class="inline">ילד = <input type="number" id="childWeight" min="0" max="1" step="0.1" style="width:72px"> מבוגר</label>
+      <button class="ghost danger" id="deleteEvent">מחק אירוע</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>משפחות</h2>
+    <div id="families" class="stack"></div>
+    <div class="row" style="margin-top:10px">
+      <input class="name" id="famName" placeholder="שם משפחה">
+      <input type="number" id="famAdults" min="0" value="2" title="מבוגרים">
+      <input type="number" id="famKids" min="0" value="0" title="ילדים">
+      <button class="primary" id="addFam">הוסף</button>
+    </div>
+    <div class="muted">מספר ראשון: מבוגרים. מספר שני: ילדים.</div>
+  </section>
+
+  <section class="card">
+    <h2>הוצאות</h2>
+    <div id="expenses"></div>
+    <div class="row" style="margin-top:10px">
+      <select id="expFam"></select>
+      <input class="name" id="expDesc" placeholder="על מה (למשל: בשר)">
+      <input type="number" id="expAmt" min="0" step="0.01" placeholder="₪">
+      <button class="primary" id="addExp">הוסף</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>סיכום</h2>
+    <div id="summary"></div>
+  </section>
+
+  <section class="card">
+    <h2>מי מעביר למי
+      <button id="copy">העתק לוואטסאפ</button>
+    </h2>
+    <div id="transfers"></div>
+  </section>
+
+</main>
+
+<script>
+const KEY='meal-split-v1';
+const uid=()=>Math.random().toString(36).slice(2,9);
+const nis=n=>'₪'+(Math.round(n*100)/100).toLocaleString('he-IL',{minimumFractionDigits:0,maximumFractionDigits:2});
+
+let db=load();
+function load(){
+  try{ const d=JSON.parse(localStorage.getItem(KEY)); if(d&&d.events&&d.events.length) return d; }catch(e){}
+  const ev=newEventObj('ארוחה משותפת');
+  return {current:ev.id, events:[ev]};
+}
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify(db)); }catch(e){} }
+function newEventObj(name){ return {id:uid(),name,childWeight:0.5,families:[],expenses:[]}; }
+const cur=()=>db.events.find(e=>e.id===db.current)||db.events[0];
+
+// ---- calculation: each family pays its share of the total; balance = paid - share
+function calc(ev){
+  const w=Number(ev.childWeight)||0;
+  const heads=f=>Number(f.adults||0)+Number(f.kids||0)*w;
+  const totalHeads=ev.families.reduce((s,f)=>s+heads(f),0);
+  const total=ev.expenses.reduce((s,x)=>s+Number(x.amount||0),0);
+  const perHead= totalHeads? total/totalHeads : 0;
+  const rows=ev.families.map(f=>{
+    const paid=ev.expenses.filter(x=>x.familyId===f.id).reduce((s,x)=>s+Number(x.amount||0),0);
+    const share=heads(f)*perHead;
+    return {f,heads:heads(f),paid,share,balance:paid-share};
+  });
+  // settle: biggest debtor pays biggest creditor, repeat
+  const debt=rows.filter(r=>r.balance<-0.005).map(r=>({name:r.f.name,amt:-r.balance})).sort((a,b)=>b.amt-a.amt);
+  const cred=rows.filter(r=>r.balance>0.005).map(r=>({name:r.f.name,amt:r.balance})).sort((a,b)=>b.amt-a.amt);
+  const transfers=[]; let i=0,j=0;
+  while(i<debt.length&&j<cred.length){
+    const m=Math.min(debt[i].amt,cred[j].amt);
+    transfers.push({from:debt[i].name,to:cred[j].name,amt:m});
+    debt[i].amt-=m; cred[j].amt-=m;
+    if(debt[i].amt<0.005)i++; if(cred[j].amt<0.005)j++;
+  }
+  return {total,totalHeads,perHead,rows,transfers};
+}
+
+// ---- render
+function render(){
+  const ev=cur(); db.current=ev.id;
+  // events
+  const E=document.getElementById('events'); E.innerHTML='';
+  db.events.forEach(e=>{
+    const b=document.createElement('button'); b.className='chip'+(e.id===ev.id?' active':''); b.textContent=e.name||'(ללא שם)';
+    b.onclick=()=>{db.current=e.id;save();render();}; E.appendChild(b);
+  });
+  document.getElementById('eventName').value=ev.name;
+  document.getElementById('childWeight').value=ev.childWeight;
+
+  // families
+  const F=document.getElementById('families'); F.innerHTML='';
+  if(!ev.families.length) F.innerHTML='<div class="empty">עדיין אין משפחות.</div>';
+  ev.families.forEach(f=>{
+    const d=document.createElement('div'); d.className='row';
+    d.innerHTML=`<input class="name" value="${esc(f.name)}" data-k="name">
+      <input type="number" min="0" value="${f.adults}" data-k="adults" title="מבוגרים">
+      <input type="number" min="0" value="${f.kids}" data-k="kids" title="ילדים">
+      <button class="ghost danger" title="הסר">✕</button>`;
+    d.querySelectorAll('input').forEach(inp=>inp.oninput=()=>{f[inp.dataset.k]=inp.dataset.k==='name'?inp.value:Number(inp.value); save(); renderCalc();});
+    d.querySelector('button').onclick=()=>{ if(!confirm(`להסיר את ${f.name}?`))return; ev.families=ev.families.filter(x=>x!==f); ev.expenses=ev.expenses.filter(x=>x.familyId!==f.id); save(); render(); };
+    F.appendChild(d);
+  });
+
+  // expense payer select
+  const S=document.getElementById('expFam'); const prev=S.value; S.innerHTML='';
+  ev.families.forEach(f=>{const o=document.createElement('option');o.value=f.id;o.textContent=f.name;S.appendChild(o);});
+  if(prev) S.value=prev;
+
+  // expenses
+  const X=document.getElementById('expenses');
+  if(!ev.expenses.length){ X.innerHTML='<div class="empty">עדיין אין הוצאות.</div>'; }
+  else{
+    X.innerHTML='<table><thead><tr><th>מי שילם</th><th>על מה</th><th class="num">סכום</th><th></th></tr></thead><tbody></tbody></table>';
+    const tb=X.querySelector('tbody');
+    ev.expenses.forEach(x=>{
+      const f=ev.families.find(f=>f.id===x.familyId);
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${esc(f?f.name:'?')}</td><td>${esc(x.desc)}</td><td class="num">${nis(x.amount)}</td><td><button class="ghost danger">✕</button></td>`;
+      tr.querySelector('button').onclick=()=>{ev.expenses=ev.expenses.filter(y=>y!==x);save();render();};
+      tb.appendChild(tr);
+    });
+  }
+  renderCalc();
+}
+
+function renderCalc(){
+  const ev=cur(); const c=calc(ev);
+  const S=document.getElementById('summary');
+  if(!ev.families.length){ S.innerHTML='<div class="empty">הוסיפו משפחות כדי לראות חלוקה.</div>'; document.getElementById('transfers').innerHTML=''; return; }
+  let h=`<div class="row" style="justify-content:space-between;margin-bottom:8px">
+    <div><div class="muted">סה"כ הוצאות</div><div class="total">${nis(c.total)}</div></div>
+    <div><div class="muted">לראש (מבוגר)</div><div class="total">${nis(c.perHead)}</div></div>
+    <div><div class="muted">ראשים משוקללים</div><div class="total">${Math.round(c.totalHeads*10)/10}</div></div>
+  </div>
+  <table><thead><tr><th>משפחה</th><th class="num">ראשים</th><th class="num">שילמו</th><th class="num">חלקם</th><th class="num">מאזן</th></tr></thead><tbody>`;
+  c.rows.forEach(r=>{
+    const cls=r.balance>0.005?'pos':r.balance<-0.005?'neg':'';
+    h+=`<tr><td>${esc(r.f.name)}</td><td class="num">${Math.round(r.heads*10)/10}</td><td class="num">${nis(r.paid)}</td><td class="num">${nis(r.share)}</td><td class="num ${cls}">${r.balance>=0?'+':'-'}${nis(Math.abs(r.balance))}</td></tr>`;
+  });
+  h+='</tbody></table><div class="muted" style="margin-top:6px">מאזן ירוק = מגיע להם כסף. אדום = חייבים.</div>';
+  S.innerHTML=h;
+
+  const T=document.getElementById('transfers');
+  if(!c.transfers.length){ T.innerHTML='<div class="empty">'+(c.total?'הכל מאוזן. אין העברות.':'אין הוצאות עדיין.')+'</div>'; return; }
+  T.innerHTML=c.transfers.map(t=>`<div class="transfer"><span><b>${esc(t.from)}</b> מעבירים ל<b>${esc(t.to)}</b></span><span class="amt">${nis(t.amt)}</span></div>`).join('');
+}
+
+function esc(s){return String(s??'').replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));}
+
+// ---- actions
+document.getElementById('newEvent').onclick=()=>{ const e=newEventObj('אירוע חדש'); db.events.push(e); db.current=e.id; save(); render(); document.getElementById('eventName').select(); };
+document.getElementById('deleteEvent').onclick=()=>{ const ev=cur(); if(!confirm(`למחוק את "${ev.name}"?`))return; db.events=db.events.filter(e=>e!==ev); if(!db.events.length) db.events.push(newEventObj('ארוחה משותפת')); db.current=db.events[0].id; save(); render(); };
+document.getElementById('eventName').oninput=e=>{cur().name=e.target.value;save();render();};
+document.getElementById('childWeight').oninput=e=>{cur().childWeight=Number(e.target.value)||0;save();renderCalc();};
+
+document.getElementById('addFam').onclick=()=>{
+  const n=document.getElementById('famName'); if(!n.value.trim()){n.focus();return;}
+  cur().families.push({id:uid(),name:n.value.trim(),adults:Number(document.getElementById('famAdults').value)||0,kids:Number(document.getElementById('famKids').value)||0});
+  n.value=''; document.getElementById('famAdults').value=2; document.getElementById('famKids').value=0; save(); render(); n.focus();
+};
+document.getElementById('famName').onkeydown=e=>{if(e.key==='Enter')document.getElementById('addFam').click();};
+
+document.getElementById('addExp').onclick=()=>{
+  const ev=cur(); const fid=document.getElementById('expFam').value; const a=document.getElementById('expAmt'); const d=document.getElementById('expDesc');
+  if(!fid){alert('קודם הוסיפו משפחה.');return;}
+  if(!(Number(a.value)>0)){a.focus();return;}
+  ev.expenses.push({id:uid(),familyId:fid,desc:d.value.trim(),amount:Number(a.value)});
+  a.value=''; d.value=''; save(); render(); d.focus();
+};
+document.getElementById('expAmt').onkeydown=e=>{if(e.key==='Enter')document.getElementById('addExp').click();};
+
+document.getElementById('copy').onclick=async()=>{
+  const ev=cur(); const c=calc(ev);
+  let t=`*${ev.name}*\nסה"כ: ${nis(c.total)} | לראש: ${nis(c.perHead)}\n\n`;
+  c.rows.forEach(r=>{t+=`${r.f.name}: שילמו ${nis(r.paid)}, חלקם ${nis(r.share)}\n`;});
+  t+='\n*העברות:*\n'+(c.transfers.length?c.transfers.map(x=>`${x.from} ← ${x.to}: ${nis(x.amt)}`).join('\n'):'הכל מאוזן');
+  try{ await navigator.clipboard.writeText(t); const b=document.getElementById('copy'); b.textContent='הועתק ✓'; setTimeout(()=>b.textContent='העתק לוואטסאפ',1500); }
+  catch(e){ prompt('העתיקו:',t); }
+};
+
+render();
+</script>
+</body>
+</html>
