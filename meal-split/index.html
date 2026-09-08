@@ -102,6 +102,15 @@
     <div id="transfers"></div>
   </section>
 
+  <section class="card">
+    <h2>שקלול כמה אירועים יחד
+      <button id="copyCombo">העתק לוואטסאפ</button>
+    </h2>
+    <div class="muted" style="margin-bottom:8px">סמנו אירועים. משפחות עם אותו שם מחוברות יחד. כל אירוע נשמר בנפרד.</div>
+    <div class="events" id="comboPick"></div>
+    <div id="combo" style="margin-top:10px"></div>
+  </section>
+
 </main>
 
 <script>
@@ -193,6 +202,7 @@ function render(){
 }
 
 function renderCalc(){
+  renderCombo();
   const ev=cur(); const c=calc(ev);
   const S=document.getElementById('summary');
   if(!ev.families.length){ S.innerHTML='<div class="empty">הוסיפו משפחות כדי לראות חלוקה.</div>'; document.getElementById('transfers').innerHTML=''; return; }
@@ -244,6 +254,64 @@ document.getElementById('copy').onclick=async()=>{
   c.rows.forEach(r=>{t+=`${r.f.name}: שילמו ${nis(r.paid)}, חלקם ${nis(r.share)}\n`;});
   t+='\n*העברות:*\n'+(c.transfers.length?c.transfers.map(x=>`${x.from} ← ${x.to}: ${nis(x.amt)}`).join('\n'):'הכל מאוזן');
   try{ await navigator.clipboard.writeText(t); const b=document.getElementById('copy'); b.textContent='הועתק ✓'; setTimeout(()=>b.textContent='העתק לוואטסאפ',1500); }
+  catch(e){ prompt('העתיקו:',t); }
+};
+
+// ---- combine several events: sum each family's balance by name, then settle once
+db.combo=db.combo||[];
+function calcCombo(ids){
+  const evs=db.events.filter(e=>ids.includes(e.id));
+  const map=new Map(); let total=0;
+  evs.forEach(ev=>{
+    const c=calc(ev); total+=c.total;
+    c.rows.forEach(r=>{
+      const k=(r.f.name||'').trim();
+      const m=map.get(k)||{name:k,paid:0,share:0,events:0};
+      m.paid+=r.paid; m.share+=r.share; m.events++; map.set(k,m);
+    });
+  });
+  const rows=[...map.values()].map(m=>({...m,balance:m.paid-m.share}));
+  const debt=rows.filter(r=>r.balance<-0.005).map(r=>({name:r.name,amt:-r.balance})).sort((a,b)=>b.amt-a.amt);
+  const cred=rows.filter(r=>r.balance>0.005).map(r=>({name:r.name,amt:r.balance})).sort((a,b)=>b.amt-a.amt);
+  const transfers=[]; let i=0,j=0;
+  while(i<debt.length&&j<cred.length){
+    const m=Math.min(debt[i].amt,cred[j].amt);
+    transfers.push({from:debt[i].name,to:cred[j].name,amt:m});
+    debt[i].amt-=m; cred[j].amt-=m;
+    if(debt[i].amt<0.005)i++; if(cred[j].amt<0.005)j++;
+  }
+  return {evs,total,rows,transfers};
+}
+function renderCombo(){
+  db.combo=db.combo.filter(id=>db.events.some(e=>e.id===id));
+  const P=document.getElementById('comboPick'); P.innerHTML='';
+  db.events.forEach(e=>{
+    const on=db.combo.includes(e.id);
+    const b=document.createElement('button'); b.className='chip'+(on?' active':''); b.textContent=(on?'✓ ':'')+(e.name||'(ללא שם)');
+    b.onclick=()=>{ db.combo=on?db.combo.filter(x=>x!==e.id):[...db.combo,e.id]; save(); renderCombo(); };
+    P.appendChild(b);
+  });
+  const C=document.getElementById('combo');
+  if(db.combo.length<2){ C.innerHTML='<div class="empty">סמנו לפחות שני אירועים.</div>'; return; }
+  const c=calcCombo(db.combo);
+  let h=`<div class="row" style="justify-content:space-between;margin-bottom:8px">
+    <div><div class="muted">סה"כ ב-${c.evs.length} אירועים</div><div class="total">${nis(c.total)}</div></div></div>
+  <table><thead><tr><th>משפחה</th><th class="num">אירועים</th><th class="num">שילמו</th><th class="num">חלקם</th><th class="num">מאזן</th></tr></thead><tbody>`;
+  c.rows.forEach(r=>{
+    const cls=r.balance>0.005?'pos':r.balance<-0.005?'neg':'';
+    h+=`<tr><td>${esc(r.name)}</td><td class="num">${r.events}</td><td class="num">${nis(r.paid)}</td><td class="num">${nis(r.share)}</td><td class="num ${cls}">${r.balance>=0?'+':'-'}${nis(Math.abs(r.balance))}</td></tr>`;
+  });
+  h+='</tbody></table><div style="margin-top:10px"><b>מי מעביר למי, סך הכל:</b></div>';
+  h+=c.transfers.length?c.transfers.map(t=>`<div class="transfer"><span><b>${esc(t.from)}</b> מעבירים ל<b>${esc(t.to)}</b></span><span class="amt">${nis(t.amt)}</span></div>`).join(''):'<div class="empty">הכל מאוזן. אין העברות.</div>';
+  C.innerHTML=h;
+}
+document.getElementById('copyCombo').onclick=async()=>{
+  if(db.combo.length<2){alert('סמנו לפחות שני אירועים.');return;}
+  const c=calcCombo(db.combo);
+  let t=`*שקלול: ${c.evs.map(e=>e.name).join(' + ')}*\nסה"כ: ${nis(c.total)}\n\n`;
+  c.rows.forEach(r=>{t+=`${r.name}: שילמו ${nis(r.paid)}, חלקם ${nis(r.share)}\n`;});
+  t+='\n*העברות:*\n'+(c.transfers.length?c.transfers.map(x=>`${x.from} ← ${x.to}: ${nis(x.amt)}`).join('\n'):'הכל מאוזן');
+  try{ await navigator.clipboard.writeText(t); const b=document.getElementById('copyCombo'); b.textContent='הועתק ✓'; setTimeout(()=>b.textContent='העתק לוואטסאפ',1500); }
   catch(e){ prompt('העתיקו:',t); }
 };
 
