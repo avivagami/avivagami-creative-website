@@ -88,6 +88,7 @@
       <input type="number" id="expAmt" min="0" step="0.01" placeholder="₪">
       <button class="primary" id="addExp">הוסף</button>
     </div>
+    <label class="inline" style="margin-top:8px"><input type="checkbox" id="expAdults" style="min-height:auto;width:20px;height:20px"> מבוגרים בלבד (למשל: אלכוהול). ילדים לא משלמים על זה.</label>
   </section>
 
   <section class="card">
@@ -128,16 +129,31 @@ function save(){ try{ localStorage.setItem(KEY,JSON.stringify(db)); }catch(e){} 
 function newEventObj(name){ return {id:uid(),name,childWeight:0.5,families:[],expenses:[]}; }
 const cur=()=>db.events.find(e=>e.id===db.current)||db.events[0];
 
-// ---- calculation: each family pays its share of the total; balance = paid - share
+// ---- calculation: each expense is split on its own, then shares are summed.
+// A normal expense splits by weighted heads (child = childWeight).
+// An adults-only expense (alcohol etc.) splits by adults only.
+// If an event has no adults at all, adults-only falls back to weighted heads.
 function calc(ev){
   const w=Number(ev.childWeight)||0;
   const heads=f=>Number(f.adults||0)+Number(f.kids||0)*w;
+  const adults=f=>Number(f.adults||0);
   const totalHeads=ev.families.reduce((s,f)=>s+heads(f),0);
+  const totalAdults=ev.families.reduce((s,f)=>s+adults(f),0);
   const total=ev.expenses.reduce((s,x)=>s+Number(x.amount||0),0);
-  const perHead= totalHeads? total/totalHeads : 0;
+  const shares=new Map(ev.families.map(f=>[f.id,0]));
+  let perHead=0; // what one adult ends up paying
+  ev.expenses.forEach(x=>{
+    const amt=Number(x.amount||0);
+    const byAdults=x.adultsOnly&&totalAdults>0;
+    const base=byAdults?totalAdults:totalHeads;
+    if(!base) return;
+    const unit=amt/base;
+    perHead+=unit;
+    ev.families.forEach(f=>shares.set(f.id,shares.get(f.id)+(byAdults?adults(f):heads(f))*unit));
+  });
   const rows=ev.families.map(f=>{
     const paid=ev.expenses.filter(x=>x.familyId===f.id).reduce((s,x)=>s+Number(x.amount||0),0);
-    const share=heads(f)*perHead;
+    const share=shares.get(f.id);
     return {f,heads:heads(f),paid,share,balance:paid-share};
   });
   // settle: biggest debtor pays biggest creditor, repeat
@@ -188,12 +204,13 @@ function render(){
   const X=document.getElementById('expenses');
   if(!ev.expenses.length){ X.innerHTML='<div class="empty">עדיין אין הוצאות.</div>'; }
   else{
-    X.innerHTML='<table><thead><tr><th>מי שילם</th><th>על מה</th><th class="num">סכום</th><th></th></tr></thead><tbody></tbody></table>';
+    X.innerHTML='<table><thead><tr><th>מי שילם</th><th>על מה</th><th>רק מבוגרים</th><th class="num">סכום</th><th></th></tr></thead><tbody></tbody></table>';
     const tb=X.querySelector('tbody');
     ev.expenses.forEach(x=>{
       const f=ev.families.find(f=>f.id===x.familyId);
       const tr=document.createElement('tr');
-      tr.innerHTML=`<td>${esc(f?f.name:'?')}</td><td>${esc(x.desc)}</td><td class="num">${nis(x.amount)}</td><td><button class="ghost danger">✕</button></td>`;
+      tr.innerHTML=`<td>${esc(f?f.name:'?')}</td><td>${esc(x.desc)}</td><td><input type="checkbox" ${x.adultsOnly?'checked':''} title="רק מבוגרים" style="min-height:auto;width:20px;height:20px"></td><td class="num">${nis(x.amount)}</td><td><button class="ghost danger">✕</button></td>`;
+      tr.querySelector('input').onchange=e=>{x.adultsOnly=e.target.checked;save();renderCalc();};
       tr.querySelector('button').onclick=()=>{ev.expenses=ev.expenses.filter(y=>y!==x);save();render();};
       tb.appendChild(tr);
     });
@@ -243,8 +260,9 @@ document.getElementById('addExp').onclick=()=>{
   const ev=cur(); const fid=document.getElementById('expFam').value; const a=document.getElementById('expAmt'); const d=document.getElementById('expDesc');
   if(!fid){alert('קודם הוסיפו משפחה.');return;}
   if(!(Number(a.value)>0)){a.focus();return;}
-  ev.expenses.push({id:uid(),familyId:fid,desc:d.value.trim(),amount:Number(a.value)});
-  a.value=''; d.value=''; save(); render(); d.focus();
+  const ao=document.getElementById('expAdults');
+  ev.expenses.push({id:uid(),familyId:fid,desc:d.value.trim(),amount:Number(a.value),adultsOnly:ao.checked});
+  a.value=''; d.value=''; ao.checked=false; save(); render(); d.focus();
 };
 document.getElementById('expAmt').onkeydown=e=>{if(e.key==='Enter')document.getElementById('addExp').click();};
 
