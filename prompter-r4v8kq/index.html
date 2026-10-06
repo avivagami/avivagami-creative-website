@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<title>Prompter</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+  :root{
+    --bg:#0d0d0e; --panel:#17171a; --line:#2a2a2f; --ink:#ececec; --muted:#8d8d95;
+    --accent:#ff3b30; --r:12px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,"Segoe UI",Arial,sans-serif}
+  button,input,select,textarea{font:inherit;color:inherit}
+  .hidden{display:none!important}
+
+  /* ---------- editor ---------- */
+  #editor{min-height:100%;display:grid;grid-template-rows:auto 1fr}
+  body:not(.editing) #editor{display:none}
+  .topbar{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .brand{font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:13px;display:flex;align-items:center;gap:8px}
+  .tally{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent)}
+  .spacer{flex:1}
+  .stats{color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
+  .btn{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:8px 14px;cursor:pointer;min-height:40px;white-space:nowrap}
+  .btn:hover{border-color:#4a4a52}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+  .workspace{display:grid;grid-template-columns:1fr 330px;min-height:0}
+  #script{width:100%;height:100%;min-height:60vh;resize:none;border:0;outline:0;background:transparent;padding:20px;font-size:18px;line-height:1.6;unicode-bidi:plaintext}
+  #script::placeholder{color:#5d5d64}
+  aside{border-left:1px solid var(--line);padding:16px;display:grid;gap:14px;align-content:start;overflow:auto}
+  .field{display:grid;gap:4px}
+  .lbl{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;display:flex;justify-content:space-between}
+  .lbl output{color:var(--ink);font-variant-numeric:tabular-nums}
+  input[type=range]{width:100%;accent-color:var(--accent)}
+  select{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px;width:100%}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .check{display:flex;gap:8px;align-items:center;font-size:14px;cursor:pointer}
+  .check input{accent-color:var(--accent);width:16px;height:16px}
+  h3{margin:6px 0 0;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+  .help{font-size:13px;color:var(--muted);margin:0}
+  .keys{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:13px;color:var(--muted)}
+  kbd{font:12px/1 ui-monospace,Consolas,monospace;background:#222226;border:1px solid #38383e;border-bottom-width:2px;border-radius:5px;padding:3px 6px;color:var(--ink);white-space:nowrap}
+  @media (max-width:800px){
+    .workspace{grid-template-columns:1fr}
+    aside{border-left:0;border-top:1px solid var(--line)}
+    #script{min-height:45vh}
+  }
+
+  /* ---------- stage ---------- */
+  #stage{position:fixed;inset:0;background:var(--pbg,#000);overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}
+  body.editing #stage{visibility:hidden;pointer-events:none}
+  #flip{position:absolute;inset:0}
+  #content{position:absolute;left:0;right:0;top:0;will-change:transform;color:var(--pfg,#fff);font-weight:600;overflow-wrap:break-word}
+  #content p{margin:0 0 .7em}
+  #content .cue{width:fit-content;max-width:100%;margin:.3em 0 .6em;font-size:.5em;line-height:1.3;padding:.15em .6em;border-radius:.25em;
+    background:var(--pfg,#fff);color:var(--pbg,#000);text-transform:uppercase;letter-spacing:.06em;font-weight:800}
+  #content.center .cue{margin-inline:auto}
+  #content .note{opacity:.45;font-style:italic;font-weight:400}
+  #content .endmark{text-align:center;opacity:.35;font-size:.5em;letter-spacing:.3em;padding-top:1em}
+  #content .empty{opacity:.4}
+  #eyeline{position:absolute;left:0;right:0;height:var(--lh);pointer-events:none;z-index:3}
+  #eyeline .band{position:absolute;inset:0;background:var(--pfg,#fff);opacity:.06}
+  #eyeline::before,#eyeline::after{content:"";position:absolute;top:calc(var(--lh)/2 - 16px);border:16px solid transparent}
+  #eyeline::before{left:0;border-left:26px solid var(--accent)}
+  #eyeline::after{right:0;border-right:26px solid var(--accent)}
+  .shade{position:absolute;left:0;right:0;pointer-events:none;z-index:2}
+  #shadeTop{top:0;background:linear-gradient(var(--pbg,#000),transparent);opacity:.75}
+  #shadeBot{bottom:0;background:linear-gradient(transparent,var(--pbg,#000));opacity:.6}
+  #progress{position:absolute;top:0;left:0;height:3px;background:var(--accent);z-index:5;width:0}
+
+  #hud{position:absolute;left:0;right:0;bottom:0;z-index:6;display:flex;flex-wrap:wrap;align-items:center;gap:8px;
+    padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(12,12,14,.88);backdrop-filter:blur(8px);
+    border-top:1px solid #2a2a2f;color:#eee;font-size:14px;transition:opacity .3s}
+  #stage.idle #hud{opacity:0;pointer-events:none}
+  #stage.idle{cursor:none}
+  #hud .btn{min-height:44px;min-width:44px;padding:6px 12px;background:#1c1c20}
+  #hud .btn.on{border-color:var(--accent);color:#fff}
+  .readout{display:flex;gap:14px;font-variant-numeric:tabular-nums;color:#bbb;font-size:13px;flex-wrap:wrap}
+  .readout b{color:#fff;font-weight:700}
+  #spd.rev{color:var(--accent)}
+  #playBtn{background:var(--accent)!important;border-color:var(--accent)!important;color:#fff;font-weight:700;min-width:64px}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#555;margin-right:6px;vertical-align:middle}
+  .dot.live{background:#30d158;box-shadow:0 0 8px #30d158}
+
+  #countdown{position:absolute;inset:0;display:grid;place-items:center;z-index:8;pointer-events:none;
+    font:800 28vh/1 system-ui,Arial,sans-serif;color:var(--accent);text-shadow:0 0 40px rgba(0,0,0,.8)}
+  #toast{position:absolute;top:18px;left:50%;transform:translateX(-50%);z-index:9;background:rgba(20,20,22,.92);color:#fff;
+    border:1px solid #333;border-radius:10px;padding:8px 14px;font-size:14px;pointer-events:none;transition:opacity .3s;opacity:0}
+  #toast.show{opacity:1}
+
+  /* talent window: no HUD, no cursor */
+  body.talent #hud{display:none}
+  body.talent #stage{cursor:none}
+  #waiting{position:absolute;inset:0;display:grid;place-items:center;color:#777;font-size:20px;z-index:7;text-align:center;padding:20px}
+</style>
+</head>
+<body class="editing">
+
+<!-- ================= EDITOR ================= -->
+<section id="editor">
+  <div class="topbar">
+    <div class="brand"><span class="tally"></span>Prompter</div>
+    <span class="stats" id="stats">0 words</span>
+    <span class="spacer"></span>
+    <label class="btn" title="Open a .txt file">Open .txt<input type="file" id="fileIn" accept=".txt,text/plain" hidden></label>
+    <button class="btn" id="clearBtn">Clear</button>
+    <button class="btn" id="talentBtn" title="Open a second window for the talent screen">Talent window</button>
+    <button class="btn hidden" id="resumeBtn">Resume</button>
+    <button class="btn primary" id="startBtn">Start ▶</button>
+  </div>
+  <div class="workspace">
+    <textarea id="script" spellcheck="false" placeholder="Paste your script here.
+
+Blank line = new paragraph.
+# Line starting with # = cue marker (jump with ← → or 1–9)
+[Text in square brackets] = note for the talent (shown dimmed)
+
+Ctrl+Enter to start."></textarea>
+    <aside>
+      <div class="field">
+        <div class="lbl">Speed <output data-o="speed"></output></div>
+        <input type="range" data-k="speed" min="-20" max="30" step="1">
+      </div>
+      <div class="field">
+        <div class="lbl">Text size <output data-o="fontSize"></output></div>
+        <input type="range" data-k="fontSize" min="24" max="200" step="2">
+      </div>
+      <div class="field">
+        <div class="lbl">Line spacing <output data-o="lineHeight"></output></div>
+        <input type="range" data-k="lineHeight" min="1" max="2.2" step="0.05">
+      </div>
+      <div class="field">
+        <div class="lbl">Side margins <output data-o="margin"></output></div>
+        <input type="range" data-k="margin" min="0" max="35" step="1">
+      </div>
+      <div class="field">
+        <div class="lbl">Reading line position <output data-o="eyeline"></output></div>
+        <input type="range" data-k="eyeline" min="5" max="70" step="1">
+      </div>
+      <div class="row2">
+        <div class="field"><div class="lbl">Colors</div>
+          <select data-k="theme">
+            <option value="wb">White on black</option>
+            <option value="yb">Yellow on black</option>
+            <option value="gb">Green on black</option>
+            <option value="bw">Black on white</option>
+          </select></div>
+        <div class="field"><div class="lbl">Font</div>
+          <select data-k="font">
+            <option value="sans">Sans</option>
+            <option value="serif">Serif</option>
+            <option value="mono">Mono</option>
+          </select></div>
+        <div class="field"><div class="lbl">Align</div>
+          <select data-k="align">
+            <option value="start">Start</option>
+            <option value="center">Center</option>
+          </select></div>
+        <div class="field"><div class="lbl">Countdown</div>
+          <select data-k="countdown">
+            <option value="0">Off</option>
+            <option value="3">3 sec</option>
+            <option value="5">5 sec</option>
+          </select></div>
+      </div>
+      <label class="check"><input type="checkbox" data-k="uppercase"> ALL CAPS</label>
+      <label class="check"><input type="checkbox" data-k="showEye"> Show reading line</label>
+      <label class="check"><input type="checkbox" data-k="shade"> Dim text away from reading line</label>
+
+      <h3>Mirror</h3>
+      <div class="row2">
+        <label class="check"><input type="checkbox" data-k="mirrorH"> This screen ⇆</label>
+        <label class="check"><input type="checkbox" data-k="mirrorV"> This screen ⇅</label>
+        <label class="check"><input type="checkbox" data-k="talentMirrorH"> Talent ⇆</label>
+        <label class="check"><input type="checkbox" data-k="talentMirrorV"> Talent ⇅</label>
+      </div>
+      <p class="help">Talent window: drag it to the prompter monitor, then double-click it for full screen. It follows this screen. Works on the same computer.</p>
+
+      <h3>Keys while running</h3>
+      <div class="keys">
+        <kbd>Space</kbd><span>Play / pause (or click the text)</span>
+        <kbd>↓ ↑</kbd><span>Faster / slower (below 0 = reverse)</span>
+        <kbd>PgDn PgUp</kbd><span>Jump half a screen</span>
+        <kbd>→ ←</kbd><span>Next / previous cue</span>
+        <kbd>1–9</kbd><span>Go to cue number</span>
+        <kbd>Home End</kbd><span>Top / end</span>
+        <kbd>+ −</kbd><span>Text size</span>
+        <kbd>M V</kbd><span>Mirror ⇆ / ⇅ (this screen)</span>
+        <kbd>F</kbd><span>Full screen</span>
+        <kbd>T</kbd><span>Open talent window</span>
+        <kbd>H</kbd><span>Keep controls visible</span>
+        <kbd>E Esc</kbd><span>Back to editor</span>
+      </div>
+      <p class="help">Mouse wheel or drag scrolls by hand. Text and settings save in this browser only.</p>
+    </aside>
+  </div>
+</section>
+
+<!-- ================= STAGE ================= -->
+<section id="stage">
+  <div id="flip">
+    <div id="content"></div>
+    <div class="shade" id="shadeTop"></div>
+    <div class="shade" id="shadeBot"></div>
+    <div id="eyeline"><div class="band"></div></div>
+  </div>
+  <div id="progress"></div>
+  <div id="countdown" class="hidden"></div>
+  <div id="toast"></div>
+  <div id="waiting" class="hidden">Waiting for the operator window…<br><small>Double-click for full screen</small></div>
+  <div id="hud">
+    <button class="btn" data-act="edit" title="Editor (E)">✎ Edit</button>
+    <button class="btn" data-act="top" title="Top (Home)">⏮</button>
+    <button class="btn" data-act="slower" title="Slower (↑)">−</button>
+    <button class="btn" id="playBtn" data-act="play" title="Play / pause (Space)">▶</button>
+    <button class="btn" data-act="faster" title="Faster (↓)">+</button>
+    <div class="readout">
+      <span>SPEED <b id="spd">0</b></span>
+      <span>TIME <b id="elapsed">0:00</b></span>
+      <span>LEFT <b id="left">–</b></span>
+      <span><b id="pct">0%</b></span>
+      <span id="talentStat"><span class="dot" id="talentDot"></span>Talent</span>
+    </div>
+    <span class="spacer"></span>
+    <button class="btn" data-act="mirror" id="mirBtn" title="Mirror this screen (M)">⇆</button>
+    <button class="btn" data-act="talent" title="Talent window (T)">⧉</button>
+    <button class="btn" data-act="pin" id="pinBtn" title="Keep controls visible (H)">📌</button>
+    <button class="btn" data-act="full" title="Full screen (F)">⛶</button>
+  </div>
+</section>
+
+<script>
+(() => {
+  'use strict';
+  const KEY = 'prompter.v1';
+  const DEFAULTS = {
+    speed: 6, fontSize: 64, lineHeight: 1.35, margin: 10, eyeline: 30,
+    theme: 'wb', font: 'sans', align: 'start', countdown: '3',
+    uppercase: false, showEye: true, shade: true,
+    mirrorH: false, mirrorV: false, talentMirrorH: true, talentMirrorV: false
+  };
+  const THEMES = { wb: ['#000', '#fff'], yb: ['#000', '#ffd60a'], gb: ['#000', '#5cff7a'], bw: ['#fff', '#000'] };
+  const FONTS = {
+    sans: 'Arial, "Helvetica Neue", "Segoe UI", sans-serif',
+    serif: 'Georgia, "Times New Roman", serif',
+    mono: 'Consolas, ui-monospace, "SFMono-Regular", monospace'
+  };
+  const PX_PER_SPEED = 0.08;          // px/sec per speed step, per px of font size
+  const isTalent = new URLSearchParams(location.search).get('view') === 'talent';
+  const $ = id => document.getElementById(id);
+
+  const body = document.body, stage = $('stage'), flip = $('flip'), content = $('content');
+  const eyeline = $('eyeline'), shadeTop = $('shadeTop'), shadeBot = $('shadeBot');
+  const scriptEl = $('script');
+
+  let S = { ...DEFAULTS }, text = '';
+  let pos = 0, maxPos = 0, eyePx = 0, vel = 0, playing = false, elapsed = 0;
+  let glide = null, lastT = 0, drawn = null, hudPinned = false, counting = null;
+  let talentWin = null, talentSeen = 0;
+
+  /* ---------- storage ---------- */
+  function load() {
+    try {
+      const d = JSON.parse(localStorage.getItem(KEY) || '{}');
+      if (d.S) S = { ...DEFAULTS, ...d.S };
+      if (typeof d.text === 'string') text = d.text;
+    } catch (e) {}
+  }
+  let saveT;
+  function save() {
+    clearTimeout(saveT);
+    saveT = setTimeout(() => { try { localStorage.setItem(KEY, JSON.stringify({ S, text })); } catch (e) {} }, 300);
+  }
+
+  /* ---------- rendering ---------- */
+  const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const fmt = l => esc(l).replace(/\[([^\]]*)\]/g, '<span class="note">[$1]</span>');
+
+  function render() {
+    const a = getAnchor();
+    const out = []; let cur = [];
+    const flush = () => { if (cur.length) { out.push('<p dir="auto">' + cur.map(fmt).join('<br>') + '</p>'); cur = []; } };
+    text.replace(/\r/g, '').split('\n').forEach(line => {
+      const t = line.trim();
+      if (!t) return flush();
+      if (t[0] === '#') { flush(); out.push('<h2 class="cue" dir="auto">' + fmt(t.replace(/^#+\s*/, '')) + '</h2>'); return; }
+      cur.push(t);
+    });
+    flush();
+    if (!out.length) out.push('<p class="empty">' + (isTalent ? '' : 'Paste your script in the editor.') + '</p>');
+    content.innerHTML = out.join('') + '<div class="endmark">■ END ■</div>';
+    layout(a);
+  }
+
+  function applyStyle() {
+    const a = getAnchor();
+    const [bg, fg] = THEMES[S.theme] || THEMES.wb;
+    stage.style.setProperty('--pbg', bg);
+    stage.style.setProperty('--pfg', fg);
+    stage.style.setProperty('--lh', (S.fontSize * S.lineHeight) + 'px');
+    content.style.fontSize = S.fontSize + 'px';
+    content.style.lineHeight = S.lineHeight;
+    content.style.fontFamily = FONTS[S.font] || FONTS.sans;
+    content.style.textTransform = S.uppercase ? 'uppercase' : 'none';
+    content.style.textAlign = S.align === 'center' ? 'center' : 'start';
+    content.classList.toggle('center', S.align === 'center');
+    const mh = isTalent ? S.talentMirrorH : S.mirrorH;
+    const mv = isTalent ? S.talentMirrorV : S.mirrorV;
+    flip.style.transform = `scale(${mh ? -1 : 1}, ${mv ? -1 : 1})`;
+    eyeline.classList.toggle('hidden', !S.showEye);
+    shadeTop.classList.toggle('hidden', !S.shade);
+    shadeBot.classList.toggle('hidden', !S.shade);
+    $('mirBtn').classList.toggle('on', !!S.mirrorH);
+    layout(a);
+  }
+
+  function layout(a) {
+    const H = stage.clientHeight;
+    eyePx = Math.round(H * S.eyeline / 100);
+    const lh = S.fontSize * S.lineHeight;
+    content.style.padding = `${eyePx}px ${S.margin}% ${Math.max(0, H - eyePx - lh)}px`;
+    eyeline.style.top = eyePx + 'px';
+    shadeTop.style.height = Math.max(0, eyePx - lh * 0.3) + 'px';
+    shadeBot.style.height = Math.max(0, H - eyePx - lh * 2.2) + 'px';
+    maxPos = Math.max(0, content.offsetHeight - H + lh);
+    if (a) setAnchor(a);
+    pos = clamp(pos);
+    drawn = null;
+    draw();
+  }
+
+  const clamp = p => Math.min(maxPos, Math.max(0, p));
+
+  /* Anchor = which block sits on the reading line, and how far into it.
+     Lets two windows of different sizes show the same spot. */
+  function getAnchor() {
+    const kids = content.children;
+    if (!kids.length) return null;
+    const y = pos + eyePx;
+    for (let i = kids.length - 1; i >= 0; i--) {
+      const k = kids[i];
+      if (k.offsetTop <= y) return { i, f: k.offsetHeight ? (y - k.offsetTop) / k.offsetHeight : 0 };
+    }
+    return { i: 0, f: 0 };
+  }
+  function setAnchor(a) {
+    const k = a && content.children[a.i];
+    if (!k) return;
+    pos = clamp(k.offsetTop + a.f * k.offsetHeight - eyePx);
+  }
+
+  /* ---------- draw + HUD ---------- */
+  const mmss = s => { s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+  const pxSpeed = () => S.speed * S.fontSize * PX_PER_SPEED;
+  let hudCache = '';
+
+  function draw() {
+    if (drawn !== pos) {
+      content.style.transform = `translate3d(0, ${-pos}px, 0)`;
+      $('progress').style.width = (maxPos ? pos / maxPos * 100 : 0) + '%';
+      drawn = pos;
+      sendPos();
+    }
+    if (isTalent) return;
+    const sp = pxSpeed();
+    const left = sp > 0 ? mmss((maxPos - pos) / sp) : '–';
+    const pct = Math.round(maxPos ? pos / maxPos * 100 : 0) + '%';
+    const key = [S.speed, Math.floor(elapsed), left, pct, playing, talentSeen > performance.now() - 2500].join('|');
+    if (key === hudCache) return;
+    hudCache = key;
+    $('spd').textContent = S.speed;
+    $('spd').classList.toggle('rev', S.speed < 0);
+    $('elapsed').textContent = mmss(Math.floor(elapsed));
+    $('left').textContent = left;
+    $('pct').textContent = pct;
+    $('playBtn').textContent = playing ? '❚❚' : '▶';
+    $('talentDot').classList.toggle('live', talentSeen > performance.now() - 2500);
+  }
+
+  /* ---------- motion loop (operator only) ---------- */
+  function tick(t) {
+    const dt = Math.min(0.1, (t - (lastT || t)) / 1000);
+    lastT = t;
+    if (glide) {
+      const k = Math.min(1, (t - glide.t0) / glide.dur);
+      const e = 1 - Math.pow(1 - k, 3);
+      pos = clamp(glide.from + (glide.to - glide.from) * e);
+      if (k >= 1) glide = null;
+    } else {
+      const target = playing ? pxSpeed() : 0;
+      vel += (target - vel) * Math.min(1, dt * 4);
+      if (!playing && Math.abs(vel) < 0.5) vel = 0;
+      if (vel) pos = clamp(pos + vel * dt);
+    }
+    if (playing) elapsed += dt;
+    draw();
+    requestAnimationFrame(tick);
+  }
+
+  function glideTo(p, dur = 350) { glide = { from: pos, to: clamp(p), t0: performance.now(), dur }; vel = 0; }
+
+  /* ---------- controls ---------- */
+  function setPlaying(on) {
+    if (counting) { cancelCountdown(); on = true; }
+    playing = on;
+    wake(on);
+    showHud();
+    draw();
+  }
+  function changeSpeed(d) {
+    S.speed = Math.max(-20, Math.min(30, S.speed + d));
+    syncControls(); changed(false);
+    toast('Speed ' + S.speed);
+  }
+  function changeFont(d) {
+    S.fontSize = Math.max(24, Math.min(200, S.fontSize + d));
+    syncControls(); changed(true);
+    toast('Text ' + S.fontSize);
+  }
+  function cues() {
+    const c = [...content.querySelectorAll('.cue')];
+    return c.length ? c : [...content.querySelectorAll('p')];
+  }
+  function jumpCue(dir) {
+    const list = cues().map(el => el.offsetTop - eyePx);
+    const target = dir > 0 ? list.find(y => y > pos + 5) : [...list].reverse().find(y => y < pos - 5);
+    glideTo(target === undefined ? (dir > 0 ? maxPos : 0) : target);
+  }
+  function gotoCue(n) {
+    const el = content.querySelectorAll('.cue')[n - 1];
+    if (el) { glideTo(el.offsetTop - eyePx); toast('Cue ' + n); }
+  }
+
+  function start(fromTop) {
+    body.classList.remove('editing');
+    scriptEl.blur();
+    layout(fromTop ? null : getAnchor());
+    if (fromTop) { pos = 0; elapsed = 0; vel = 0; }
+    playing = false;
+    drawn = null; draw();
+    const n = parseInt(S.countdown, 10) || 0;
+    if (n > 0) runCountdown(n); else setPlaying(true);
+  }
+  function toEditor() {
+    cancelCountdown();
+    playing = false; vel = 0; wake(false);
+    body.classList.add('editing');
+    $('resumeBtn').classList.toggle('hidden', pos <= 0);
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+  }
+
+  function runCountdown(n) {
+    const el = $('countdown');
+    el.classList.remove('hidden');
+    let left = n;
+    el.textContent = left;
+    counting = setInterval(() => {
+      left--;
+      if (left <= 0) { cancelCountdown(); setPlaying(true); }
+      else el.textContent = left;
+    }, 1000);
+  }
+  function cancelCountdown() {
+    if (counting) clearInterval(counting);
+    counting = null;
+    $('countdown').classList.add('hidden');
+  }
+
+  function toggleFull() {
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    else document.documentElement.requestFullscreen?.().catch(() => {});
+  }
+
+  let toastT;
+  function toast(msg) {
+    const t = $('toast');
+    t.textContent = msg; t.classList.add('show');
+    clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 900);
+  }
+
+  let idleT;
+  function showHud() {
+    stage.classList.remove('idle');
+    clearTimeout(idleT);
+    if (!hudPinned) idleT = setTimeout(() => { if (playing) stage.classList.add('idle'); }, 2500);
+  }
+
+  let lock = null;
+  async function wake(on) {
+    try {
+      if (on && !lock && navigator.wakeLock) { lock = await navigator.wakeLock.request('screen'); lock.addEventListener('release', () => { lock = null; }); }
+      if (!on && lock) { await lock.release(); lock = null; }
+    } catch (e) {}
+  }
+
+  /* ---------- talent window sync ---------- */
+  const bc = 'BroadcastChannel' in window ? new BroadcastChannel('prompter-sync') : null;
+  function sendState() { bc && !isTalent && bc.postMessage({ type: 'state', S, text }); }
+  function sendPos() { if (bc && !isTalent) { const a = getAnchor(); a && bc.postMessage({ type: 'pos', a }); } }
+  function openTalent() {
+    if (!bc) { toast('This browser cannot sync windows'); return; }
+    talentWin = window.open(location.pathname + '?view=talent', 'prompter-talent', 'popup=yes,width=1280,height=720');
+    if (!talentWin) toast('Pop-up blocked. Allow pop-ups for this site.');
+  }
+
+  /* ---------- settings binding ---------- */
+  function syncControls() {
+    document.querySelectorAll('[data-k]').forEach(el => {
+      const v = S[el.dataset.k];
+      if (el.type === 'checkbox') el.checked = !!v; else el.value = v;
+    });
+    document.querySelectorAll('[data-o]').forEach(o => {
+      const k = o.dataset.o, v = S[k];
+      o.textContent = k === 'margin' || k === 'eyeline' ? v + '%' : k === 'fontSize' ? v + 'px' : v;
+    });
+  }
+  function changed(restyle) {
+    if (restyle) applyStyle(); else draw();
+    save(); sendState();
+  }
+  function updateStats() {
+    const words = (text.match(/[^\s#\[\]]+/g) || []).length;
+    $('stats').textContent = words + ' words · ~' + mmss(words / 150 * 60) + ' at 150 wpm';
+  }
+
+  /* ================= INIT ================= */
+  load();
+
+  if (isTalent) {
+    body.classList.remove('editing');
+    body.classList.add('talent');
+    document.title = 'Prompter — Talent';
+    $('waiting').classList.remove('hidden');
+    applyStyle(); render();
+    if (bc) {
+      bc.onmessage = ({ data }) => {
+        if (data.type === 'state') {
+          $('waiting').classList.add('hidden');
+          const a = getAnchor();
+          const textChanged = data.text !== text;
+          S = { ...DEFAULTS, ...data.S }; text = data.text;
+          if (textChanged) render();
+          applyStyle();
+          if (a) setAnchor(a);
+        } else if (data.type === 'pos') {
+          setAnchor(data.a); draw();
+        }
+      };
+      bc.postMessage({ type: 'hello' });
+      setInterval(() => bc.postMessage({ type: 'alive' }), 1000);
+    }
+    stage.addEventListener('dblclick', toggleFull);
+    addEventListener('resize', () => layout(getAnchor()));
+    return;
+  }
+
+  // operator
+  scriptEl.value = text;
+  syncControls(); applyStyle(); render(); updateStats();
+  if (bc) bc.onmessage = ({ data }) => {
+    if (data.type === 'hello') { sendState(); sendPos(); }
+    if (data.type === 'hello' || data.type === 'alive') talentSeen = performance.now();
+  };
+  addEventListener('beforeunload', () => { try { talentWin && talentWin.close(); } catch (e) {} });
+
+  let renderT;
+  scriptEl.addEventListener('input', () => {
+    text = scriptEl.value; updateStats(); save();
+    clearTimeout(renderT); renderT = setTimeout(() => { render(); sendState(); }, 250);
+  });
+  scriptEl.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); text = scriptEl.value; render(); start(true); }
+  });
+
+  document.querySelectorAll('[data-k]').forEach(el => {
+    el.addEventListener('input', () => {
+      const k = el.dataset.k;
+      S[k] = el.type === 'checkbox' ? el.checked : el.type === 'range' ? parseFloat(el.value) : el.value;
+      syncControls();
+      changed(k !== 'speed');
+    });
+  });
+
+  $('startBtn').onclick = () => { text = scriptEl.value; render(); start(true); };
+  $('resumeBtn').onclick = () => start(false);
+  $('talentBtn').onclick = openTalent;
+  $('clearBtn').onclick = () => {
+    if (scriptEl.value && !confirm('Clear the script?')) return;
+    scriptEl.value = ''; text = ''; pos = 0; render(); updateStats(); save(); sendState(); scriptEl.focus();
+  };
+  $('fileIn').onchange = e => {
+    const f = e.target.files[0]; if (!f) return;
+    const r = new FileReader();
+    r.onload = () => { scriptEl.value = text = String(r.result); pos = 0; render(); updateStats(); save(); sendState(); };
+    r.readAsText(f);
+    e.target.value = '';
+  };
+
+  // HUD buttons
+  $('hud').addEventListener('click', e => {
+    const b = e.target.closest('[data-act]'); if (!b) return;
+    e.stopPropagation();
+    ({
+      edit: toEditor,
+      top: () => { playing = false; glideTo(0); elapsed = 0; },
+      slower: () => changeSpeed(-1),
+      faster: () => changeSpeed(1),
+      play: () => setPlaying(!playing),
+      mirror: () => { S.mirrorH = !S.mirrorH; syncControls(); changed(true); },
+      talent: openTalent,
+      pin: () => { hudPinned = !hudPinned; $('pinBtn').classList.toggle('on', hudPinned); showHud(); },
+      full: toggleFull
+    })[b.dataset.act]();
+    b.blur();
+  });
+  $('hud').addEventListener('pointerdown', e => e.stopPropagation());
+
+  // Stage: click = play/pause, drag or wheel = scroll by hand
+  let drag = null;
+  const dirV = () => (S.mirrorV ? -1 : 1);
+  stage.addEventListener('pointerdown', e => {
+    if (body.classList.contains('editing')) return;
+    drag = { y: e.clientY, moved: false };
+    stage.setPointerCapture(e.pointerId);
+  });
+  stage.addEventListener('pointermove', e => {
+    showHud();
+    if (!drag) return;
+    const dy = e.clientY - drag.y;
+    if (!drag.moved && Math.abs(dy) < 6) return;
+    drag.moved = true; glide = null;
+    pos = clamp(pos - dy * dirV());
+    drag.y = e.clientY;
+  });
+  stage.addEventListener('pointerup', () => {
+    if (drag && !drag.moved) setPlaying(!playing);
+    drag = null;
+  });
+  stage.addEventListener('wheel', e => {
+    if (body.classList.contains('editing')) return;
+    e.preventDefault(); glide = null;
+    pos = clamp(pos + e.deltaY * dirV());
+    showHud();
+  }, { passive: false });
+
+  // Keyboard (running mode only)
+  addEventListener('keydown', e => {
+    if (body.classList.contains('editing') || e.ctrlKey || e.metaKey || e.altKey) return;
+    const H = stage.clientHeight;
+    const k = e.key;
+    const map = {
+      ' ': () => setPlaying(!playing),
+      ArrowDown: () => changeSpeed(1),
+      ArrowUp: () => changeSpeed(-1),
+      PageDown: () => glideTo(pos + H * 0.5),
+      PageUp: () => glideTo(pos - H * 0.5),
+      ArrowRight: () => jumpCue(1),
+      ArrowLeft: () => jumpCue(-1),
+      Home: () => { playing = false; glideTo(0); elapsed = 0; },
+      End: () => glideTo(maxPos),
+      '+': () => changeFont(4), '=': () => changeFont(4), '-': () => changeFont(-4),
+      m: () => { S.mirrorH = !S.mirrorH; syncControls(); changed(true); },
+      v: () => { S.mirrorV = !S.mirrorV; syncControls(); changed(true); },
+      f: toggleFull,
+      t: openTalent,
+      h: () => $('pinBtn').click(),
+      e: toEditor,
+      Escape: toEditor
+    };
+    const fn = map[k] || map[k.toLowerCase()];
+    if (fn) { e.preventDefault(); fn(); showHud(); }
+    else if (/^[1-9]$/.test(k)) { e.preventDefault(); gotoCue(+k); }
+  });
+
+  addEventListener('resize', () => layout(getAnchor()));
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && playing) wake(true); });
+
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
