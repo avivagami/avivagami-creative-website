@@ -1115,3 +1115,36 @@ video.show__video {
   outline-offset: 3px;
   border-radius: 2px;
 }
+
+/* =========================================================
+   ENCORE — link strip to /ai-video/ (end of ACT I)
+   ========================================================= */
+
+.encore {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px clamp(20px, 3vw, 48px);
+  margin-top: clamp(40px, 7vh, 80px);
+  padding: clamp(22px, 3.5vh, 36px) clamp(18px, 2.5vw, 32px);
+  border: 1px solid var(--signal);
+  background: var(--signal-dim);
+  transition: background 0.35s var(--ease), color 0.35s var(--ease);
+}
+.encore__no { color: var(--signal); }
+.encore__title {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(32px, 5vw, 76px);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+.encore__title em { color: var(--signal); letter-spacing: 0; }
+.encore__go { color: var(--bone-dim); white-space: nowrap; }
+.encore:hover { background: var(--signal); color: var(--stage); }
+.encore:hover .encore__no,
+.encore:hover .encore__go,
+.encore:hover .encore__title em { color: var(--stage); }
+@media (max-width: 760px) {
+  .encore { grid-template-columns: 1fr; }
+}
