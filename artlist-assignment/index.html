@@ -326,7 +326,7 @@ body.menu-open .nav{color:var(--cream)}
 .screen.playing .play{opacity:0;pointer-events:none}
 .screen .note{position:absolute;inset-inline:12px;inset-block-end:12px;font-size:12px;background:var(--cream);color:var(--ink);padding:8px 10px;border-radius:6px;display:none}
 .screen.missing .note{display:block}
-.phone .tag{display:inline-block;margin-top:32px;font:600 11px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;padding:8px 10px;background:var(--sage);color:var(--basil-deep);border-radius:3px}
+.phone .tag{display:table;margin-top:20px;font:600 11px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;padding:8px 10px;background:var(--sage);color:var(--basil-deep);border-radius:3px}
 .phone h3{font:400 clamp(26px,2.4vw,36px)/1.05 var(--serif);margin-top:14px}
 .phone .dur{font-size:13px;opacity:.6;margin-top:6px;font-variant-numeric:tabular-nums}
 .phone p{font-size:15px;opacity:.8;margin-top:12px;max-width:38ch}
@@ -466,7 +466,8 @@ body{font-size:18px}
 .proc-dl:hover{background:var(--basil);color:var(--cream);border-color:var(--basil)}
 @media (max-width:720px){.proc-dl{white-space:normal}.proc-dl small{white-space:nowrap}}
 .h-who span{display:block;line-height:1.6}
-.h-who span:first-child{color:var(--cream)}
+.h-who .h-name{display:block;margin-bottom:12px;font:400 clamp(30px,3vw,44px)/1.05 var(--serif);letter-spacing:-.01em;text-transform:none;color:var(--cream)}
+.h-who .h-name+span{color:var(--cream)}
 @media (max-width:720px){body{font-size:17px}.fd p,.feat dd,.chap p{font-size:17px}.step p,.it p,.phone p{font-size:16px}}
 </style>
 
@@ -518,7 +519,7 @@ body{font-size:18px}
     <div class="f f-lemon"><img src="media/lemon.webp" alt=""></div>
   </div>
   <div class="h-copy">
-    <p class="eyebrow h-who"><span>Aviv Agami · Home assignment submission for</span><span>Artlist · AI Enterprise Solution Expert</span></p>
+    <p class="eyebrow h-who"><b class="h-name">Aviv Agami</b><span>Home assignment for Artlist</span><span>AI Enterprise Solution Expert</span></p>
     <h1 class="split">Soda that <em>takes care of you.</em></h1>
     <p class="lede">FORM Lemon Basil Prebiotic Soda. A brand, a product, an image system, four short-form videos and an innovation film, all generated from one shared style kit.</p>
     <div class="tabs" aria-label="Product data">
