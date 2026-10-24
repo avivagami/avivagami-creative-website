@@ -291,7 +291,9 @@ body.menu-open .nav{color:var(--cream)}
 .reel-pin{min-height:100svh;display:flex;flex-direction:column;justify-content:center;padding-block:clamp(96px,10vw,140px) 48px}
 .reel-top{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:48px}
 .reel-top .count{font:400 clamp(28px,3vw,44px)/1 var(--serif);white-space:nowrap;font-variant-numeric:tabular-nums}
-.track{display:flex;gap:clamp(16px,2vw,28px);padding-inline:var(--g);will-change:transform}
+.track{display:flex;gap:clamp(16px,2vw,28px);padding-inline:var(--g);will-change:transform;touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
+.track.dragging{cursor:grabbing}
+.track img{-webkit-user-drag:none;pointer-events:none}
 .card{flex:0 0 auto;width:clamp(260px,26vw,400px)}
 .card.wide{width:clamp(320px,42vw,640px)}
 .card .ph{position:relative;overflow:hidden;border-radius:6px;aspect-ratio:4/5;background:var(--stone)}
@@ -1202,6 +1204,30 @@ mm.add("(min-width:0px)",()=>{
   const tw=gsap.to(track,{x:()=>-dist(),ease:"none",scrollTrigger:{trigger:".reel-pin",start:"bottom bottom",end:()=>"+="+dist(),pin:true,scrub:.8,invalidateOnRefresh:true,
     onUpdate:s=>{$(".reel-bar i").style.transform=`scaleX(${s.progress})`;ci.textContent=String(Math.min(IMAGES.length,1+Math.floor(s.progress*IMAGES.length))).padStart(2,"0")}}});
   $$(".card .ph img").forEach(im=>gsap.fromTo(im,{xPercent:-6},{xPercent:6,ease:"none",scrollTrigger:{trigger:im.parentNode,containerAnimation:tw,start:"left right",end:"right left",scrub:true}}));
+
+  /* sideways gestures on the reel (swipe, trackpad, mouse drag) map 1:1 onto the pinned scroll, so people can go back */
+  const st=tw.scrollTrigger;
+  const nudge=dx=>{
+    const cur=lenis?lenis.targetScroll:scrollY, to=gsap.utils.clamp(st.start,st.end,cur+dx);
+    lenis?lenis.scrollTo(to,{immediate:true}):scrollTo(0,to);
+  };
+  const onWheel=e=>{if(st.isActive&&Math.abs(e.deltaX)>Math.abs(e.deltaY)){e.preventDefault();nudge(e.deltaX)}};
+  let sx=0,sy=0,lx=0,lock=null,drag=false;
+  const onDown=e=>{if(!st.isActive||(e.pointerType==="mouse"&&e.button!==0))return; sx=lx=e.clientX;sy=e.clientY;lock=null;drag=true};
+  const onMove=e=>{
+    if(!drag)return;
+    if(lock===null){const ax=Math.abs(e.clientX-sx),ay=Math.abs(e.clientY-sy); if(ax<6&&ay<6)return; lock=ax>ay?"x":"y"; if(lock==="x")track.classList.add("dragging")}
+    if(lock!=="x")return;
+    nudge(lx-e.clientX); lx=e.clientX;
+  };
+  const onUp=()=>{drag=false;lock=null;track.classList.remove("dragging")};
+  const onTouchMove=e=>{if(lock==="x")e.preventDefault()};
+  track.addEventListener("wheel",onWheel,{passive:false});
+  track.addEventListener("pointerdown",onDown);
+  addEventListener("pointermove",onMove);
+  addEventListener("pointerup",onUp); addEventListener("pointercancel",onUp);
+  track.addEventListener("touchmove",onTouchMove,{passive:false});
+  return()=>{track.removeEventListener("wheel",onWheel);track.removeEventListener("pointerdown",onDown);removeEventListener("pointermove",onMove);removeEventListener("pointerup",onUp);removeEventListener("pointercancel",onUp);track.removeEventListener("touchmove",onTouchMove)};
 });
 
 
