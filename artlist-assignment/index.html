@@ -6,6 +6,7 @@
 <title>FORM · Show Your Ratio</title>
 <meta name="description" content="FORM Lemon Basil Prebiotic Soda. An AI-generated brand, image and video ecosystem by Aviv Agami. Artlist home assignment, AI Enterprise Solution Expert.">
 <meta name="robots" content="noindex, nofollow">
+<script>/* cover the page until the JS loader is mounted, so the site never flashes first */document.documentElement.classList.add("pre");setTimeout(function(){document.documentElement.classList.remove("pre")},8000)</script>
 <meta name="theme-color" content="#24452F">
 <meta property="og:title" content="FORM · Show Your Ratio">
 <meta property="og:description" content="An AI-built brand ecosystem for a prebiotic soda. By Aviv Agami.">
@@ -53,6 +54,7 @@ body::after{content:"";position:fixed;inset:-50%;z-index:90;pointer-events:none;
 .w>span{display:inline-block}
 
 /* ---------- loader ---------- */
+html.pre::after{content:"";position:fixed;inset:0;z-index:99;background:var(--basil)}
 .loader{position:fixed;inset:0;z-index:100;background:var(--basil);color:var(--cream);display:grid;place-items:center}
 .loader .lm{width:clamp(150px,17vw,250px);overflow:hidden;display:flex;flex-direction:column;align-items:flex-start;padding-bottom:4px}
 .loader .lm span{display:block}
@@ -61,16 +63,16 @@ body::after{content:"";position:fixed;inset:-50%;z-index:90;pointer-events:none;
 .loader .lm span+span{width:100%;margin-top:5.29%}
 .loader .pct{position:absolute;inset-inline-start:var(--g);inset-block-end:var(--g);font:400 clamp(40px,6vw,80px)/1 var(--serif);font-variant-numeric:tabular-nums}
 .loader .cap{position:absolute;inset-inline-end:var(--g);inset-block-end:calc(var(--g) + 8px);color:var(--sage)}
-.open{position:absolute;inset-inline:0;inset-block-end:clamp(90px,16vh,160px);margin-inline:auto;width:max-content;display:flex;flex-direction:column;align-items:center;gap:14px;opacity:0;pointer-events:none;transition:opacity .3s var(--ease)}
-.loader.ready .open{opacity:1;pointer-events:auto}
+.gate{position:absolute;inset-inline:0;inset-block-end:clamp(90px,16vh,160px);margin-inline:auto;width:max-content;display:flex;flex-direction:column;align-items:center;gap:14px;opacity:0;pointer-events:none;transition:opacity .3s var(--ease)}
+.loader.ready .gate{opacity:1;pointer-events:auto}
 .open-btn{display:flex;align-items:center;gap:14px;background:var(--cream);color:var(--basil-deep);padding:16px 26px 16px 18px;border-radius:999px;font:600 13px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;transition:transform .15s var(--ease)}
 .open-btn:hover{transform:translateY(-2px)}
 .open-btn:active{transform:scale(.97)}
 .open-btn svg{width:34px;height:34px}
 .open-btn:hover .tabpull{transform:rotate(-24deg)}
 .tabpull{transform-origin:12px 18px;transition:transform .2s var(--ease)}
-.open small{font:500 12px/1 var(--sans);letter-spacing:.06em;color:var(--sage)}
-.open .skip{font:500 12px/1 var(--sans);color:var(--sage);text-decoration:underline;text-underline-offset:3px;opacity:.8}
+.gate small{font:500 12px/1 var(--sans);letter-spacing:.06em;color:var(--sage)}
+.gate .skip{font:500 12px/1 var(--sans);color:var(--sage);text-decoration:underline;text-underline-offset:3px;opacity:.8}
 .fizz{position:fixed;inset:0;z-index:95;pointer-events:none;width:100%;height:100%}
 .loader .lm{margin-top:-16vh}
 
@@ -1026,7 +1028,7 @@ if(reduce){
 const loader=document.createElement("div");
 loader.className="loader";
 loader.innerHTML=`<div class="lm" aria-hidden="true"><span ><svg viewBox="0 0 1730 1088"><use href="#lg-fo"/></svg></span><span ><svg viewBox="0 0 1854 1008"><use href="#lg-rm"/></svg></span></div>
-<div class="open">
+<div class="gate">
   <button class="open-btn" type="button"><svg viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><ellipse cx="17" cy="20" rx="13" ry="9"/><g class="tabpull"><rect x="9" y="12" width="13" height="8" rx="4"/><circle cx="17" cy="16" r="1.4" fill="currentColor"/></g></svg>Open</button>
   <small>Sound on for the full pour</small>
   <button class="skip" type="button">Enter without sound</button>
@@ -1119,7 +1121,7 @@ function openCan(withSound){
   fizz();
   document.documentElement.style.overflow=""; if(lenis) lenis.start();
   const tl=gsap.timeline();
-  tl.to(".open",{opacity:0,y:-10,duration:.25})
+  tl.to(".gate",{opacity:0,y:-10,duration:.25})
     .to(".lm span",{yPercent:-110,stagger:.06,duration:.45,ease:"power3.in"},"<")
     .to(loader,{yPercent:-100,duration:.8,ease:"power4.inOut"},"-=.1")
     .set(loader,{display:"none"})
@@ -1163,17 +1165,7 @@ heroMM.add("(min-width:901px)",()=>{
     .to(".f-sprig",{yPercent:-120,rotate:25},0)
     .to(".h-copy",{y:-60,opacity:0},0);
 });
-heroMM.add("(max-width:900px)",()=>{
-  /* mobile: the copy stays put and readable; only the stage drifts in layers */
-  gsap.timeline({scrollTrigger:{trigger:".h-stage",start:"top top",end:"bottom top",scrub:.4}})
-    .to(".h-bg",{yPercent:10,ease:"none"},0)
-    .to(".wm-fo",{xPercent:-8,yPercent:-6,ease:"none"},0).to(".wm-rm",{xPercent:6,yPercent:-12,ease:"none"},0)
-    .to(".h-can",{yPercent:-6,rotate:-3,ease:"none"},0)
-    .to(".f-leaf",{yPercent:-90,rotate:30,ease:"none"},0)
-    .to(".f-leaf2",{yPercent:-130,rotate:-20,ease:"none"},0)
-    .to(".f-lemon",{yPercent:-70,rotate:-45,ease:"none"},0)
-    .to(".f-sprig",{yPercent:-40,rotate:12,ease:"none"},0);
-});
+/* mobile: no scroll parallax; the hero scrolls away as one piece */
 
 /* ---- split headings ---- */
 $$(".sec .split, .reel .split").forEach(h=>{
@@ -1248,6 +1240,8 @@ addEventListener("load",()=>ScrollTrigger.refresh());
 if(document.fonts) document.fonts.ready.then(()=>ScrollTrigger.refresh());
 }
 }
+/* the loader (or the plain page) is in place now: drop the pre-paint cover */
+document.documentElement.classList.remove("pre");
 </script>
 </body>
 </html>
